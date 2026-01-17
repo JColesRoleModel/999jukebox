@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DEATH RACE // 999 JUKEBOX</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Oxanium:wght@400;600;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --void: #050508;
+            --hull: #121216;
+            --panel: #1a1a20;
+            --chrome: #e0e0e0;
+            --text-dim: #8a8a9b;
+            
+            --neon-purple: #b026ff;
+            --neon-blue: #00f3ff;
+            --plasma-orange: #ff5e00;
+            --alert-red: #ff2a2a;
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-ui: 'Oxanium', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-purple) var(--hull);
+            user-select: none; /* App-like feel */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--void);
+            color: var(--chrome);
+            font-family: var(--font-body);
+            height: 100vh; /* Fallback */
+            height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PROCEDURAL BACKGROUND --- */
+        .starfield {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a0b2e 0%, var(--void) 70%);
+            overflow: hidden;
+        }
+
+        .grid-floor {
+            position: absolute;
+            bottom: -20%;
+            left: -50%;
+            width: 200%;
+            height: 50%;
+            background: 
+                linear-gradient(transparent 0%, var(--neon-purple) 2px, transparent 3px),
+                linear-gradient(90deg, transparent 0%, var(--neon-purple) 2px, transparent 3px);
+            background-size: 100px 100px;
+            transform: perspective(500px) rotateX(60deg);
+            opacity: 0.15;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(100px); }
+        }
+
+        /* --- LAYOUT STRUCTURE --- */
+        
+        /* 1. TOP MODULE: THE DECK (PLAYER) */
+        .module-deck {
+            flex: 1; /* Takes remaining height */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            border-bottom: 2px solid var(--panel);
+            min-height: 0; /* Important for flex items to shrink */
+        }
+
+        /* 2. SEPARATOR: THE BELT */
+        .separator-belt {
+            height: 12px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--panel),
+                var(--panel) 10px,
+                var(--hull) 10px,
+                var(--hull) 20px
+            );
+            border-top: 1px solid var(--neon-purple);
+            border-bottom: 1px solid var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        /* 3. BOTTOM MODULE: THE CRATE (PLAYLIST) */
+        .module-crate {
+            height: 40vh; /* Fixed height portion */
+            background: var(--hull);
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid var(--void);
+            flex-shrink: 0;
+        }
+
+        /* --- THE REACTOR (CSS VISUALIZER) --- */
+        .reactor-container {
+            width: 260px;
+            height: 260px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            flex-shrink: 0; /* Don't squash automatically */
+        }
+
+        /* Outer Ring */
+        .reactor-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px dashed var(--text-dim);
+            animation: spin 60s linear infinite;
+        }
+
+        /* Middle Ring */
+        .reactor-mid {
+            position: absolute;
+            width: 80%; height: 80%;
+            border-radius: 50%;
+            border: 4px solid var(--panel);
+            border-top-color: var(--neon-purple);
+            border-bottom-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(176, 38, 255, 0.2);
+            animation: spin 4s linear infinite reverse;
+        }
+
+        /* Core */
+        .reactor-core {
+            width: 60%; height: 60%;
+            background: radial-gradient(circle, var(--panel) 30%, #000 100%);
+            border-radius: 50%;
+            border: 1px solid var(--neon-purple);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 30px var(--neon-purple);
+            z-index: 2;
+        }
+
+        /* The 999 Logo inside Core */
+        .core-text {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
+            letter-spacing: -2px;
+        }
+
+        /* Pulse Animation when playing */
+        .reactor-active .reactor-mid {
+            animation-duration: 2s;
+            box-shadow: 0 0 40px rgba(176, 38, 255, 0.5);
+            border-top-color: var(--plasma-orange);
+        }
+        
+        .reactor-active .core-text {
+            animation: pulseText 0.5s infinite alternate;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseText { 
+            0% { text-shadow: 0 0 10px var(--neon-purple); opacity: 0.9; }
+            100% { text-shadow: 0 0 25px var(--plasma-orange); opacity: 1; }
+        }
+
+        /* --- PLAYER CONTROLS --- */
+        .track-display {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 500px;
+            z-index: 5;
+            flex-shrink: 0;
+        }
+
+        .song-title {
+            font-family: var(--font-ui);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            background: var(--panel);
+            border: 1px solid var(--text-dim);
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        .control-panel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0,0,0,0.5);
+            padding: 15px 25px;
+            border-radius: 40px;
+            border: 1px solid var(--panel);
+            backdrop-filter: blur(5px);
+            flex-shrink: 0;
+            flex-wrap: wrap; /* Safety wrap for tiny screens */
+            justify-content: center;
+        }
+
+        .c-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+        }
+
+        .c-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        .c-btn.active { color: var(--plasma-orange); text-shadow: 0 0 10px var(--plasma-orange); }
+
+        .play-btn {
+            width: 60px; height: 60px;
+            font-size: 1.6rem;
+            border: 2px solid var(--chrome);
+            color: var(--chrome);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+        
+        .play-btn:hover {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        .like-main-btn.liked {
+            color: var(--alert-red);
+            animation: beat 0.3s;
+        }
+
+        .action-btn {
+             color: var(--neon-blue);
+        }
+        .action-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 8px var(--neon-blue);
+        }
+
+        @keyframes beat { 50% { transform: scale(1.3); } }
+
+        /* Progress Bar */
+        .scrubber-contain {
+            width: 80%; max-width: 400px;
+            margin-top: 20px;
+            flex-shrink: 0;
+        }
+        
+        .scrub-bar {
+            height: 4px; background: var(--panel);
+            cursor: pointer; position: relative;
+            padding: 10px 0; /* Increase touch target */
+            background-clip: content-box;
+        }
+        
+        .scrub-fill {
+            height: 4px; background: var(--neon-blue);
+            width: 0%;
+            box-shadow: 0 0 10px var(--neon-blue);
+            position: relative;
+        }
+
+        .scrub-fill::after {
+            content: ''; position: absolute; right: -4px; top: -3px;
+            width: 10px; height: 10px; background: #fff; border-radius: 50%;
+        }
+
+        .time-stamps {
+            display: flex; justify-content: space-between;
+            font-family: var(--font-ui); font-size: 0.8rem; color: var(--text-dim);
+            margin-top: 0px;
+        }
+
+        /* --- CRATE (PLAYLIST) STYLING --- */
+        .crate-header {
+            display: flex;
+            background: #000;
+            flex-shrink: 0;
+        }
+
+        .crate-tab {
+            flex: 1;
+            padding: 15px;
+            background: #0a0a0e;
+            color: var(--text-dim);
+            border: none;
+            border-bottom: 2px solid var(--panel);
+            font-family: var(--font-ui);
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .crate-tab:hover { background: #15151a; color: #fff; }
+
+        .crate-tab.active {
+            background: var(--hull);
+            color: var(--neon-purple);
+            border-bottom: 2px solid var(--neon-purple);
+        }
+
+        .track-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling iOS */
+        }
+
+        .track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px; /* Larger hit area */
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-family: var(--font-body);
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .track-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        
+        .track-item.playing {
+            background: linear-gradient(90deg, rgba(176, 38, 255, 0.1), transparent);
+            border-left: 4px solid var(--neon-purple);
+            color: var(--neon-blue);
+        }
+
+        .track-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .mini-btn {
+            background: none; border: none; color: #333; font-size: 1rem; cursor: pointer;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+        .mini-btn:hover { color: #888; }
+        
+        .mini-heart.liked { color: var(--alert-red); }
+        .mini-download { color: #444; }
+        .mini-download:hover { color: var(--neon-blue); }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: var(--hull);
+            border: 1px solid var(--neon-purple);
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(176, 38, 255, 0.2);
+            position: relative;
+            max-width: 400px; width: 90%;
+        }
+
+        .modal-content h1 {
+            font-family: var(--font-display);
+            margin: 0 0 10px 0;
+            color: #fff;
+            letter-spacing: 5px;
+        }
+
+        .modal-btn {
+            background: transparent;
+            border: 1px solid var(--plasma-orange);
+            color: var(--plasma-orange);
+            padding: 15px 30px;
+            font-family: var(--font-ui);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: var(--plasma-orange);
+            color: #000;
+            box-shadow: 0 0 20px var(--plasma-orange);
+        }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 600px) {
+            .module-deck {
+                padding: 10px;
+                justify-content: flex-start; /* Push content to top to avoid crowding */
+                padding-top: 20px;
+            }
+
+            .reactor-container {
+                width: 180px;
+                height: 180px;
+                margin-bottom: 15px;
+            }
+
+            .core-text { font-size: 2rem; }
+            
+            .song-title { font-size: 1.2rem; max-width: 90%; }
+            
+            .control-panel {
+                padding: 10px 15px;
+                gap: 8px;
+            }
+            
+            .c-btn { width: 35px; height: 35px; font-size: 1rem; }
+            .play-btn { width: 50px; height: 50px; font-size: 1.3rem; }
+            
+            .module-crate {
+                height: 45vh; /* Give list more space on mobile */
+            }
+            
+            .track-item { padding: 12px 15px; font-size: 0.9rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- VISUAL BACKGROUND -->
+    <div class="starfield">
+        <div class="grid-floor"></div>
+    </div>
+
+    <!-- STARTUP MODAL -->
+    <div class="modal-overlay" id="startModal">
+        <div class="modal-content">
+            <h1>999 SYSTEM</h1>
+            <p style="color:var(--text-dim); font-family:var(--font-ui);">ASTRAL AUDIO ENGINE LOADED</p>
+            <button class="modal-btn" onclick="startSystem()">
+                <i class="fas fa-power-off"></i> IGNITE
+            </button>
+        </div>
+    </div>
+
+    <!-- TOP DECK: PLAYER -->
+    <section class="module-deck">
+        
+        <!-- CSS REACTOR VISUALIZER -->
+        <div class="reactor-container" id="reactor">
+            <div class="reactor-ring"></div> <!-- Slow spin -->
+            <div class="reactor-mid"></div>  <!-- Counter spin -->
+            <div class="reactor-core">
+                <div class="core-text">999</div>
+            </div>
+        </div>
+
+        <!-- TRACK INFO -->
+        <div class="track-display">
+            <div class="song-title" id="mainTitle">SYSTEM READY</div>
+            <div class="status-badge" id="statusBadge">IDLE</div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="control-panel">
+            <button class="c-btn" id="shuffleBtn" title="Shuffle"><i class="fas fa-random"></i></button>
+            <button class="c-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+            
+            <button class="c-btn play-btn" id="playBtn"><i class="fas fa-play"></i></button>
+            
+            <button class="c-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+            
+            <!-- Download & Like -->
+            <button class="c-btn action-btn" id="mainDownloadBtn" title="Download Song"><i class="fas fa-download"></i></button>
+            <button class="c-btn like-main-btn" id="mainLikeBtn" title="Save to Crate"><i class="far fa-heart"></i></button>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="scrubber-contain">
+            <div class="scrub-bar" id="progressArea">
+                <div class="scrub-fill" id="progressBar"></div>
+            </div>
+            <div class="time-stamps">
+                <span id="currTime">0:00</span>
+                <span id="totTime">0:00</span>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- SEPARATOR -->
+    <div class="separator-belt"></div>
+
+    <!-- BOTTOM CRATE: PLAYLIST -->
+    <section class="module-crate">
+        <div class="crate-header">
+            <button class="crate-tab active" id="tabAll" onclick="switchTab('all')">DATABASE</button>
+            <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')">SAVED CRATE</button>
+        </div>
+        <div class="track-list" id="playlistContainer">
+            <!-- Items injected via JS -->
+        </div>
+    </section>
+
+    <script>
+        /* --- CONFIG --- */
+        const ASSET_PATH_AUDIO = 'assets/audio/';
+        
+        const RAW_SONGS = [
+            "_38 Special (Go Go).mp3", "20_20 Vison.mp3", "25 Dark Place _ Denial.mp3", "27 Club.mp3", "Again (Watch Yo_ Step).mp3", 
+            "Alaska (whip).mp3", "Anacondas.mp3", "Anakin.mp3", "Attachments.mp3", "Back in Chicago w_ Young Thug.mp3", 
+            "Bad Boy.mp3", "Baguettes.mp3", "Birds Eye View.mp3", "Blue Cash.mp3", "Body Bag.mp3", "Both Ways.mp3", 
+            "Bye Bye Baby.mp3", "Cadaver _ Faster.mp3", "Cake.mp3", "Can't Be Saved.mp3", "Carry It.mp3", "Cavalier.mp3", 
+            "Codeine Casket.mp3", "Cold Summer.mp3", "Confessions.mp3", "Confused.mp3", "Cursed.mp3", "Damn Right.mp3", 
+            "Dark Outside.mp3", "Dark Tints _ Double R.mp3", "Deep In.mp3", "Demise.mp3", "Deprived 1.mp3", "Deprived.mp3", 
+            "DJ Khaled - Juice WRLD DID (Lyrics) Ft. Juice WRLD.mp3", "Dome.mp3", "Draco On Me.mp3", "Feel Like a God.mp3", 
+            "Feel Real.mp3", "FireFlies.mp3", "Fleur De Lis.mp3", "Flight To London - juice wrld.mp3", "Floor It.mp3", 
+            "Forget Me Not.mp3", "Fuego.mp3", "Game.mp3", "Got Nothing On Me.mp3", "Heavy Metal.mp3", "High Again.mp3", 
+            "Hot Ham.mp3", "Iron On Me.mp3", "Jeffrey.mp3", "Jet Lag.mp3", "Jetta.mp3", "Juice world So Fake (full Session)-(unreleased).mp3", 
+            "Juice Wrld - 911 (Lyrics).mp3", "Junkie.mp3", "K Like A Russian.mp3", "KiKi.mp3", "Kirby's Selecta.mp3", 
+            "Knuck If You Buck.mp3", "Kurtis Blow.mp3", "Lavish.mp3", "Let The Party Start _ Oxy In The Dark.mp3", 
+            "Lightyears.mp3", "Lock n' Load _ Gun Song.mp3", "Lock-On.mp3", "Lone Ranger.mp3", "Long Time Coming.mp3", 
+            "Lose a Dream.mp3", "Lost Too Many.mp3", "Lullabies.mp3", "Mannequin Challenge.mp3", "Mansion.mp3", 
+            "Maserati.mp3", "Matte Black.mp3", "Meadows.mp3", "Midnight Hours.mp3", "Minus.mp3", "Misery Avenue.mp3", 
+            "Murakami.mp3", "Neverland.mp3", "No Stopping Us.mp3", "Nuts Itch.mp3", "Off the Rip.mp3", "Oh Dear (NLMB).mp3", 
+            "OJ Glove.mp3", "Omen (Overseer).mp3", "Outer Space.mp3", "Pay Day.mp3", "Perky Potter (Get No Peace).mp3", 
+            "Racks In (Racks Off).mp3", "Rage.mp3", "Red Dead Redemption.mp3", "Red Moonlight.mp3", "Road Runners.mp3", 
+            "Rob a Bank.mp3", "Say Goodbye to My Mom.mp3", "Scarface.mp3", "Semi Addict.mp3", "Sexual Healing.mp3", 
+            "Shot 'Em Down.mp3", "Smoke _ Cell Phone.mp3", "So Hard.mp3", "So What.mp3", "Spanglish.mp3", 
+            "Spilt My Brains (808 Freestyle).mp3", "Stick Talk _ Lava Girl.mp3", "Stumblin.mp3", "Tag.mp3", "Take My Soul.mp3", 
+            "Take My Time.mp3", "Takeover.mp3", "Tales of the Toxic.mp3", "Talking To The Voices (Extended).mp3", 
+            "Talking to the Voices.mp3", "They All Talk.mp3", "Three _ Dolce Jeans.mp3", "Time (Juice Live).mp3", "Time.mp3", 
+            "To the Grave.mp3", "Trick or Treat.mp3", "Trifling.mp3", "Uncanny (50 $M's).mp3", "Under 25.mp3", "Until I Die.mp3", 
+            "USD.mp3", "Vegetarians.mp3", "Vlone Thugs.mp3", "Waiting For The Drugs To Hit Me.mp3", "Waves.mp3", 
+            "Way Too Many.mp3", "Western _ Best Of Em.mp3", "What's Brakkin (Ft. Offset).mp3", "Whatever I Like.mp3", 
+            "Woke Up Rich (Whistles OG).mp3", "Worth It.mp3", "X-mas List.mp3", "Yacht Club.mp3", "You Can't Tell Me.mp3", 
+            "Young God (extended).mp3", "Young God.mp3", "Zero Toleration.mp3", "Zombie.mp3", "Zoom.mp3"
+        ];
+
+        /* --- STATE --- */
+        let songs = [];
+        let likedSongs = JSON.parse(localStorage.getItem('jw999_likes')) || [];
+        let currentPlaylist = [];
+        let currentIndex = 0;
+        let isShuffle = true; // Default to shuffle on for this theme
+        let currentTab = 'all';
+
+        const audio = new Audio();
+
+        /* --- ELEMENTS --- */
+        const mainTitle = document.getElementById('mainTitle');
+        const statusBadge = document.getElementById('statusBadge');
+        const playBtn = document.getElementById('playBtn');
+        const progressBar = document.getElementById('progressBar');
+        const currTimeEl = document.getElementById('currTime');
+        const totTimeEl = document.getElementById('totTime');
+        const playlistContainer = document.getElementById('playlistContainer');
+        const startModal = document.getElementById('startModal');
+        const reactor = document.getElementById('reactor');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const mainLikeBtn = document.getElementById('mainLikeBtn');
+        const mainDownloadBtn = document.getElementById('mainDownloadBtn');
+
+        /* --- INIT --- */
+        function init() {
+            songs = RAW_SONGS.map((f, i) => ({
+                id: i,
+                title: f.replace('.mp3','').replace(/_/g, ' '),
+                file: ASSET_PATH_AUDIO + f
+            }));
+            
+            // Set initial playlist
+            currentPlaylist = [...songs];
+            
+            // Render initial list
+            renderPlaylist();
+            
+            // Pre-set shuffle UI
+            if(isShuffle) shuffleBtn.classList.add('active');
+        }
+
+        function startSystem() {
+            startModal.style.opacity = '0';
+            setTimeout(()=> startModal.style.display = 'none', 500);
+            
+            // Start random
+            if(isShuffle) {
+                currentIndex = Math.floor(Math.random() * songs.length);
+            }
+            loadSong(currentPlaylist[currentIndex]);
+            playSong();
+        }
+
+        /* --- PLAYER LOGIC --- */
+        function loadSong(song) {
+            if(!song) return;
+            mainTitle.innerText = song.title;
+            audio.src = song.file;
+            statusBadge.innerText = "BUFFERING...";
+            statusBadge.style.color = "var(--neon-blue)";
+            
+            // Reset Progress
+            progressBar.style.width = '0%';
+            
+            // Update Main Like Button State
+            updateMainLikeBtn(song.id);
+            
+            // Media Session
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: song.title,
+                    artist: 'Juice WRLD // 999',
+                    artwork: [{ src: 'https://placehold.co/512/000000/FFF?text=999', sizes: '512x512', type: 'image/png' }]
+                });
+                navigator.mediaSession.setActionHandler('play', playSong);
+                navigator.mediaSession.setActionHandler('pause', pauseSong);
+                navigator.mediaSession.setActionHandler('previoustrack', prevSong);
+                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+            }
+
+            highlightTrack(song.id);
+        }
+
+        function playSong() {
+            audio.play().then(() => {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                reactor.classList.add('reactor-active');
+                statusBadge.innerText = "ACTIVE // 120MPH";
+                statusBadge.style.color = "var(--plasma-orange)";
+                statusBadge.style.borderColor = "var(--plasma-orange)";
+            }).catch(e => console.log(e));
+        }
+
+        function pauseSong() {
+            audio.pause();
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            reactor.classList.remove('reactor-active');
+            statusBadge.innerText = "PAUSED";
+            statusBadge.style.color = "var(--text-dim)";
+            statusBadge.style.borderColor = "var(--text-dim)";
+        }
+
+        function togglePlay() {
+            if (audio.paused) playSong();
+            else pauseSong();
+        }
+
+        function nextSong() {
+            if (isShuffle) {
+                currentIndex = Math.floor(Math.random() * currentPlaylist.length);
+            } else {
+                currentIndex++;
+                if(currentIndex >= currentPlaylist.length) currentIndex = 0;
+            }
+            loadSong(currentPlaylist[currentIndex]);
+            playSong();
+        }
+
+        function prevSong() {
+            if (isShuffle) {
+                currentIndex = Math.floor(Math.random() * currentPlaylist.length);
+            } else {
+                currentIndex--;
+                if(currentIndex < 0) currentIndex = currentPlaylist.length - 1;
+            }
+            loadSong(currentPlaylist[currentIndex]);
+            playSong();
+        }
+
+        /* --- DOWNLOAD SYSTEM --- */
+        function triggerDownload(e, song) {
+            if(e) e.stopPropagation(); // Stop playing song if clicked in list
+            
+            if(!song) {
+                // If called from main button without specific song arg, use current
+                song = currentPlaylist[currentIndex];
+            }
+            
+            if(!song) return;
+
+            // Create temporary anchor
+            const a = document.createElement('a');
+            a.href = song.file;
+            a.download = `${song.title}.mp3`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        /* --- LIKING SYSTEM --- */
+        // Toggle current playing song
+        function toggleCurrentLike() {
+            if(!currentPlaylist[currentIndex]) return;
+            const id = currentPlaylist[currentIndex].id;
+            
+            toggleLikeData(id);
+            updateMainLikeBtn(id);
+            renderPlaylist(); // Refresh list to show heart changes
+        }
+
+        // Toggle from list
+        function toggleLikeList(e, id) {
+            e.stopPropagation();
+            toggleLikeData(id);
+            
+            // If currently playing song matches, update main button
+            if(currentPlaylist[currentIndex] && currentPlaylist[currentIndex].id === id) {
+                updateMainLikeBtn(id);
+            }
+            
+            // If in saved tab, we might need to remove item instantly
+            if(currentTab === 'saved') {
+                updatePlaylistView();
+            } else {
+                renderPlaylist();
+            }
+        }
+
+        function toggleLikeData(id) {
+            if (likedSongs.includes(id)) {
+                likedSongs = likedSongs.filter(sId => sId !== id);
+            } else {
+                likedSongs.push(id);
+            }
+            localStorage.setItem('jw999_likes', JSON.stringify(likedSongs));
+        }
+
+        function updateMainLikeBtn(id) {
+            const isLiked = likedSongs.includes(id);
+            if(isLiked) {
+                mainLikeBtn.innerHTML = '<i class="fas fa-heart"></i>';
+                mainLikeBtn.classList.add('liked');
+            } else {
+                mainLikeBtn.innerHTML = '<i class="far fa-heart"></i>';
+                mainLikeBtn.classList.remove('liked');
+            }
+        }
+
+        /* --- PLAYLIST & TABS --- */
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.crate-tab').forEach(b => b.classList.remove('active'));
+            if(tab === 'all') document.getElementById('tabAll').classList.add('active');
+            else document.getElementById('tabSaved').classList.add('active');
+            
+            updatePlaylistView();
+        }
+
+        function updatePlaylistView() {
+            if (currentTab === 'saved') {
+                currentPlaylist = songs.filter(s => likedSongs.includes(s.id));
+            } else {
+                currentPlaylist = [...songs];
+            }
+            // Reset index relative to new list if possible, otherwise 0
+            // Simplified: Just render list. Next/Prev might jump if list changed while playing.
+            renderPlaylist();
+        }
+
+        function renderPlaylist() {
+            playlistContainer.innerHTML = '';
+            
+            if(currentPlaylist.length === 0) {
+                playlistContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#555;">[ EMPTY DATA ]</div>';
+                return;
+            }
+
+            currentPlaylist.forEach((song, idx) => {
+                const isLiked = likedSongs.includes(song.id);
+                const el = document.createElement('div');
+                el.className = 'track-item';
+                el.id = `track-${song.id}`;
+                el.onclick = () => { currentIndex = idx; loadSong(song); playSong(); };
+                
+                // Note: passing song object logic requires ID lookup in raw render
+                // We use closures/helper functions for cleaner HTML onclicks
+                
+                el.innerHTML = `
+                    <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                        ${idx+1}. ${song.title}
+                    </div>
+                    <div class="track-actions">
+                        <button class="mini-btn mini-download" onclick="triggerDownload(event, songs.find(s=>s.id==${song.id}))">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="mini-btn mini-heart ${isLiked ? 'liked' : ''}" onclick="toggleLikeList(event, ${song.id})">
+                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                    </div>
+                `;
+                playlistContainer.appendChild(el);
+            });
+            
+            // Highlight current if in list
+            if(currentPlaylist[currentIndex]) highlightTrack(currentPlaylist[currentIndex].id);
+        }
+
+        function highlightTrack(id) {
+            document.querySelectorAll('.track-item').forEach(e => e.classList.remove('playing'));
+            const el = document.getElementById(`track-${id}`);
+            if(el) {
+                el.classList.add('playing');
+                el.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+        }
+
+        /* --- EVENTS --- */
+        playBtn.addEventListener('click', togglePlay);
+        nextBtn.addEventListener('click', nextSong);
+        prevBtn.addEventListener('click', prevSong);
+        
+        mainLikeBtn.addEventListener('click', toggleCurrentLike);
+        mainDownloadBtn.addEventListener('click', (e) => triggerDownload(e, null)); // Null means use current
+        
+        shuffleBtn.addEventListener('click', () => {
+            isShuffle = !isShuffle;
+            shuffleBtn.classList.toggle('active');
+        });
+
+        audio.addEventListener('timeupdate', (e) => {
+            const cur = audio.currentTime;
+            const dur = audio.duration;
+            if(isNaN(dur)) return;
+            
+            const pct = (cur / dur) * 100;
+            progressBar.style.width = pct + '%';
+            
+            currTimeEl.innerText = formatTime(cur);
+            totTimeEl.innerText = formatTime(dur);
+        });
+        
+        audio.addEventListener('ended', nextSong);
+
+        document.getElementById('progressArea').addEventListener('click', (e) => {
+            const w = document.getElementById('progressArea').clientWidth;
+            const clickX = e.offsetX;
+            const dur = audio.duration;
+            if(dur) audio.currentTime = (clickX / w) * dur;
+        });
+
+        function formatTime(s) {
+            let m = Math.floor(s / 60);
+            let sec = Math.floor(s % 60);
+            if(sec < 10) sec = '0'+sec;
+            return `${m}:${sec}`;
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
