@@ -632,12 +632,12 @@
             }
 
             .reactor-container { 
-                width: 100px; 
-                height: 100px; 
+                width: 130px; 
+                height: 130px; 
                 margin-bottom: 0; 
                 flex-shrink: 0;
             }
-            .core-text { font-size: 1.2rem; }
+            .core-text { font-size: 1.5rem; }
 
             .track-display { 
                 margin-bottom: 0; 
@@ -1478,6 +1478,7 @@
                 const playCount = playCounts[song.originalTitle] || 0;
                 const isHiddenView = currentTab === 'hidden';
                 
+                // Safe string for onclick
                 const safeOrigTitle = song.originalTitle.replace(/'/g, "\\'");
                 const safeFile = song.file.replace(/'/g, "\\'");
 
@@ -1499,7 +1500,7 @@
                             <button class="mini-btn mini-add" onclick="openAddToPlaylistModal(event, '${safeOrigTitle}')">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="mini-btn mini-download" onclick="triggerDownload(event, {file:'${safeFile}', title:'${safeOrigTitle}'})">
+                            <button class="mini-btn mini-download" onclick="triggerDownload(event, ${song.id})">
                                 <i class="fas fa-download"></i>
                             </button>
                             <button class="mini-btn mini-hide" onclick="toggleHide(event, '${safeOrigTitle}')">
@@ -1552,6 +1553,7 @@
         
         audio.addEventListener('ended', nextSong);
 
+        // Click to Seek
         const scrubber = document.getElementById('scrubberContain');
         scrubber.addEventListener('click', (e) => {
             const width = scrubber.clientWidth;
@@ -1560,6 +1562,7 @@
             if(dur) audio.currentTime = (x / width) * dur;
         });
 
+        // Hover for Time Preview
         scrubber.addEventListener('mousemove', (e) => {
             const width = scrubber.clientWidth;
             const x = e.offsetX;
@@ -1576,6 +1579,19 @@
             let sec = Math.floor(s % 60);
             if(sec < 10) sec = '0'+sec;
             return `${m}:${sec}`;
+        }
+
+        function triggerDownload(e, id) {
+            if(e) e.stopPropagation();
+            const song = songs.find(s => s.id === id);
+            if(!song) return;
+            
+            const a = document.createElement('a');
+            a.href = song.file;
+            a.download = `${song.title}.mp3`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         init();
