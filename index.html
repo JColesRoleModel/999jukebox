@@ -532,7 +532,8 @@
 
         .pl-edit-btn { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; }
         .pl-edit-btn:hover { color: var(--chrome); }
-        
+        .pl-delete-btn:hover { color: var(--rust-blaze); }
+
         .track-list {
             flex: 1;
             overflow-y: auto;
@@ -860,7 +861,7 @@
             "Forever Is Whatever .mp3", "Forget Me Not.mp3", "Forget the Past.mp3", "Fuego.mp3", "Fun Time.mp3", "Handle It.mp3", "Happy Life.mp3", 
             "Heading South.mp3", "Heavy Metal.mp3", "Hectic.mp3", "High Tide.mp3", "Higher.mp3", "House in the Hills.mp3", 
             "Hypnotic Full Session - juice wrld.mp3", "I Want This Forever .mp3", "In My Bag.mp3", "It’s 4AM.mp3", 
-            "Juice WRLD  -  High Again (Unreleased).mp3", "Juice WRLD -  Cowboy Hunt (Unreleased).mp3", 
+            "Juice WRLD   Boss Of Me  Lyrics.mp3", "Juice WRLD  -  High Again (Unreleased).mp3", "Juice WRLD -  Cowboy Hunt (Unreleased).mp3", 
             "Juice WRLD -  Extra (CDQ Remaster) (Remaster W⧸ New Snippets) w⧸official beat.mp3", "juice wrld - ＂you don't know me＂ (unreleased the party never ends).mp3", 
             "Juice WRLD - 24⧸7 (365) (New Leak⧸CDQ) (Prod. Danny Wolf, DILIP & Instupendo).mp3", "67 / martian.mp3", "Juice Wrld - 911 (Lyrics).mp3", 
             "Juice WRLD - Afterlife (New Leak).mp3", "Juice WRLD - All Your Sins ⧸ Ace Of Spades (NEW LEAK).mp3", "Juice WRLD - Anacondas (NEW) Highest Quality.mp3", 
@@ -892,9 +893,9 @@
             "Juice WRLD & Roddy Ricch - Soda Pop (Unreleased).mp3", "Juice WRLD & Young Thug - Bye Bye Baby.mp3", "Juice WRLD Lose A Dream Full Studio Session.mp3", 
             "Juice Wrld Quitter FULL AUDIO (unreleased).mp3", "used to extended.mp3", "Juice Wrld X Young Thug - Baguettes (Leaked Today).mp3", 
             "Juice WRLD- Bad news (Unreleased) Official Audio.mp3", "Juice Wrld-JetLag Unreleased.mp3", "Juice WRLD-Wake Up-(unreleased).mp3", 
-            "Juice WRLD： GoPro.mp3", "rain dance.mp3", "JuiceWRLD： Time.mp3", "Karate Kid.mp3", 
+            "Juice WRLD, Marshmello - We Don't Get Along.mp3", "Juice WRLD： GoPro.mp3", "rain dance.mp3", "JuiceWRLD： Time.mp3", "Karate Kid.mp3", 
             "Kick Back.mp3", "Kinda Lonely.mp3", "Late Night Drives.mp3", "Legends Never Die - Chrissy Costanza spin the bottle tour DC.mp3", 
-            "Lighter.mp3", "Lil Uzi Vert - Doin The Most.mp3", "Loser.mp3", "Lost In Your Feels .mp3", "Lost Love.mp3", "Lost.mp3", "Mind Games.mp3", 
+            "Lighter.mp3", "Loser.mp3", "Lost In Your Feels .mp3", "Lost Love.mp3", "Lost.mp3", "Mind Games.mp3", 
             "Mistake.mp3", "Monster.mp3", "Monsters in My Basement.mp3", "Morning.mp3", "Murakami.mp3", "Naruto vs Sauske- Demon Love.mp3", 
             "No Friends.mp3", "No Jumper.mp3", "not perfect.mp3", "Novocaine.mp3", "Oh Dear (NLMB).mp3", "OLD ME ﹤⧸3.mp3", "On My Mind Juice Wlrd Unreleased.mp3", 
             "On My Mind.mp3", "Passed Out .mp3", "Pay Day.mp3", "Problem Solvers.mp3", "Purple Ocean.mp3", "Purple Substance.mp3", 
@@ -938,6 +939,7 @@
         let isShuffle = true;
         let currentTab = 'all'; // all, saved, hidden, or playlist-ID
         let currentAddToSong = null;
+        let currentlyPlayingSong = null;
 
         const audio = new Audio();
         
@@ -1053,6 +1055,7 @@
         /* --- PLAYER LOGIC --- */
         function loadSong(song) {
             if(!song) return;
+            currentlyPlayingSong = song; // Track independent of list
             mainTitle.innerText = song.title;
             audio.src = song.file;
             statusBadge.innerText = "BUFFERING...";
@@ -1175,9 +1178,9 @@
 
         /* --- ACTIONS --- */
         function toggleCurrentLike() {
-            if(!currentPlaylist[currentIndex]) return;
-            toggleLikeData(currentPlaylist[currentIndex].originalTitle);
-            updateMainLikeBtn(currentPlaylist[currentIndex].originalTitle);
+            if(!currentlyPlayingSong) return;
+            toggleLikeData(currentlyPlayingSong.originalTitle);
+            updateMainLikeBtn(currentlyPlayingSong.originalTitle);
             renderPlaylist(); 
         }
 
@@ -1221,8 +1224,20 @@
         }
 
         function hideCurrentSong(e) {
-            const current = currentPlaylist[currentIndex];
-            if(current) toggleHide(e, current.originalTitle);
+            if(currentlyPlayingSong) toggleHide(e, currentlyPlayingSong.originalTitle);
+        }
+
+        function triggerDownload(e, id) {
+            if(e) e.stopPropagation(); 
+            const song = songs.find(s => s.id === id);
+            if(!song) return;
+            
+            const a = document.createElement('a');
+            a.href = song.file;
+            a.download = `${song.title}.mp3`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         /* --- RENAMING --- */
@@ -1242,14 +1257,13 @@
         }
 
         function editCurrentSong(e) {
-            const current = currentPlaylist[currentIndex];
-            if(current) editSongTitle(e, current);
+            if(currentlyPlayingSong) editSongTitle(e, currentlyPlayingSong);
         }
 
         /* --- SCROLLING LOGIC --- */
         function scrollToCurrentTrack() {
-            if(!currentPlaylist[currentIndex]) return;
-            const id = currentPlaylist[currentIndex].id;
+            if(!currentlyPlayingSong) return;
+            const id = currentlyPlayingSong.id;
             
             // If the song isn't visible in current list (e.g. paused on a song, switched to Saved tab where it isn't), switch to All
             const inList = currentPlaylist.find(s => s.id === id);
@@ -1257,7 +1271,12 @@
                 switchTab('all');
                 // Need to wait for render? Sync render handles it.
                 // Re-find index in new list
-                currentIndex = currentPlaylist.findIndex(s => s.id === id);
+                const newIndex = currentPlaylist.findIndex(s => s.id === id);
+                if(newIndex > -1) currentIndex = newIndex;
+            } else {
+                // If it is in list, sync index just in case tab switch desynced it
+                const newIndex = currentPlaylist.findIndex(s => s.id === id);
+                if(newIndex > -1) currentIndex = newIndex;
             }
             highlightTrack(id);
         }
@@ -1316,12 +1335,14 @@
         }
 
         function renderPlaylistTabs() {
+            // Icons for Database, Saved, Hidden
             crateHeader.innerHTML = `
                 <button class="crate-tab" id="tabAll" onclick="switchTab('all')" title="DATABASE"><i class="fas fa-save"></i></button>
                 <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')" title="SAVED CRATE"><i class="fas fa-heart" style="color: var(--rust-blaze);"></i></button>
                 <button class="crate-tab" id="tabHidden" onclick="switchTab('hidden')" title="ARCHIVE"><i class="fas fa-eye-slash"></i></button>
             `;
             
+            // Custom Playlists (Icons Only)
             playlists.forEach(pl => {
                 const btn = document.createElement('button');
                 btn.className = 'crate-tab';
@@ -1332,6 +1353,7 @@
                 crateHeader.appendChild(btn);
             });
 
+            // Create Button
             const createBtn = document.createElement('button');
             createBtn.className = 'crate-tab crate-tab-create';
             createBtn.innerHTML = '<i class="fas fa-plus"></i>';
@@ -1345,10 +1367,11 @@
             if(e) e.stopPropagation();
             if(playlists.length === 0) return alert("CREATE A PLAYLIST FIRST (+)");
             
+            // If argument provided (from list), use it. Otherwise use current playing song
             if(typeof title === 'string') {
                 currentAddToSong = title;
-            } else {
-                currentAddToSong = currentPlaylist[currentIndex]?.originalTitle;
+            } else if (currentlyPlayingSong) {
+                currentAddToSong = currentlyPlayingSong.originalTitle;
             }
 
             if(!currentAddToSong) return;
@@ -1367,7 +1390,7 @@
             document.getElementById('addToPlaylistModal').classList.add('active');
         }
 
-        function addToPlaylist(plId, title) { 
+        function addToPlaylist(plId, title) { // title here is originalTitle
             const pl = playlists.find(p => p.id === plId);
             if(pl && !pl.songs.includes(title)) {
                 pl.songs.push(title);
@@ -1457,6 +1480,7 @@
                 if(pl) {
                     currentPlaylist = songs.filter(s => pl.songs.includes(s.originalTitle));
                     label = pl.name;
+                    // Add Edit/Delete controls
                     plEditControls.innerHTML = `
                         <button class="pl-edit-btn" onclick="editPlaylistName()"><i class="fas fa-pencil-alt"></i></button>
                     `;
@@ -1503,10 +1527,11 @@
 
             const html = currentPlaylist.map((song, idx) => {
                 const isLiked = likedSongs.includes(song.originalTitle);
-                const isActive = currentPlaylist[currentIndex] && currentPlaylist[currentIndex].id === song.id;
+                const isActive = currentlyPlayingSong && currentlyPlayingSong.id === song.id;
                 const playCount = playCounts[song.originalTitle] || 0;
                 const isHiddenView = currentTab === 'hidden';
                 
+                // Safe string for onclick
                 const safeOrigTitle = song.originalTitle.replace(/'/g, "\\'");
                 const safeFile = song.file.replace(/'/g, "\\'");
 
@@ -1547,7 +1572,7 @@
             
             playlistContainer.innerHTML = html;
             
-            if(currentPlaylist[currentIndex]) highlightTrack(currentPlaylist[currentIndex].id);
+            if(currentlyPlayingSong) highlightTrack(currentlyPlayingSong.id);
         }
 
         window.playSpecific = function(id) {
@@ -1582,6 +1607,7 @@
             if(isNaN(dur)) return;
             progressBar.style.width = (cur / dur) * 100 + '%';
             currTimeEl.innerText = formatTime(cur);
+            // Updating the hovering total time not needed here anymore, handled by mousemove
             totTimeEl.innerText = formatTime(dur);
         });
         
@@ -1613,19 +1639,6 @@
             let sec = Math.floor(s % 60);
             if(sec < 10) sec = '0'+sec;
             return `${m}:${sec}`;
-        }
-
-        function triggerDownload(e, id) {
-            if(e) e.stopPropagation();
-            const song = songs.find(s => s.id === id);
-            if(!song) return;
-            
-            const a = document.createElement('a');
-            a.href = song.file;
-            a.download = `${song.title}.mp3`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
 
         init();
