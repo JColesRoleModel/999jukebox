@@ -120,36 +120,36 @@
             100% { transform: perspective(300px) rotateX(70deg) translateY(60px); }
         }
 
-        /* --- LAYOUT STRUCTURE --- */
-        .module-deck {
-            flex: 1;
+        /* --- TOP BAR (PERMANENT) --- */
+        .top-bar {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 20px;
+            padding: 10px 20px;
+            background: var(--hull);
             border-bottom: 2px solid var(--panel);
-            min-height: 0;
-            transition: padding 0.3s;
+            width: 100%;
+            z-index: 100;
+            height: 60px;
+            flex-shrink: 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
-        .module-crate {
-            height: 45vh;
-            background: var(--hull);
-            display: flex;
-            flex-direction: column;
-            border-top: 2px solid var(--rust-blaze);
-            flex-shrink: 0;
+        .app-title {
+            font-family: var(--font-ui); /* Oxanium */
+            font-style: italic;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--chrome);
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            letter-spacing: 1px;
         }
 
         /* --- SEARCH BAR --- */
         .search-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            width: 220px;
+            position: relative;
+            width: 40%;
+            max-width: 250px;
         }
 
         #searchInput {
@@ -180,7 +180,7 @@
             overflow-y: auto;
             display: none;
             box-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            z-index: 101;
+            z-index: 200;
             margin-top: 5px;
         }
         
@@ -209,15 +209,38 @@
             text-transform: uppercase;
         }
 
+        /* --- LAYOUT STRUCTURE --- */
+        .module-deck {
+            flex-shrink: 0; /* Let it be sized by content */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 10px 20px 20px 20px; /* Reduced top padding */
+            border-bottom: 2px solid var(--panel);
+            background: rgba(1, 0, 1, 0.5);
+        }
+
+        .module-crate {
+            flex-grow: 1; /* Fills remaining space */
+            height: auto; /* Allow grow */
+            background: var(--hull);
+            display: flex;
+            flex-direction: column;
+            border-top: 2px solid var(--rust-blaze);
+            overflow: hidden; /* Contain scrolling list */
+        }
+
         /* --- THE REACTOR --- */
         .reactor-container {
-            width: 260px;
-            height: 260px;
+            width: 220px;
+            height: 220px;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             transition: all 0.3s ease;
             flex-shrink: 0;
         }
@@ -259,7 +282,7 @@
         .core-text {
             font-family: var(--font-display);
             font-weight: 900;
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: #fff;
             text-shadow: 0 0 10px var(--flame-amber);
             letter-spacing: -2px;
@@ -290,17 +313,17 @@
 
         .track-display {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             width: 100%;
             max-width: 500px;
             z-index: 5;
             flex-shrink: 0;
-            cursor: pointer; /* Suggests clickable */
+            cursor: pointer;
         }
 
         .song-title {
             font-family: var(--font-ui);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 5px;
@@ -337,6 +360,7 @@
             justify-content: center;
             max-width: 100%;
             box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
         }
 
         .c-btn {
@@ -374,12 +398,13 @@
 
         @keyframes beat { 50% { transform: scale(1.3); } }
 
-        /* Progress Bar */
+        /* Progress Bar (Full Width) */
         .scrubber-contain {
-            width: 80%; max-width: 400px;
-            margin-top: 20px;
+            width: 100%; 
+            margin-top: 10px;
             flex-shrink: 0;
             position: relative;
+            padding: 0 10px; /* Small safe padding */
         }
         
         .scrub-bar {
@@ -402,7 +427,7 @@
 
         .duration-label {
             position: absolute;
-            top: -25px; 
+            top: -30px; 
             text-align: center;
             font-family: var(--font-ui);
             font-size: 0.9rem;
@@ -414,8 +439,8 @@
             z-index: 10;
             transform: translateX(-50%);
             white-space: nowrap;
-            background: rgba(0,0,0,0.8);
-            padding: 2px 6px;
+            background: rgba(0,0,0,0.9);
+            padding: 2px 8px;
             border-radius: 3px;
             border: 1px solid var(--panel);
         }
@@ -425,7 +450,8 @@
         .time-stamps {
             display: flex; justify-content: space-between;
             font-family: var(--font-ui); font-size: 0.8rem; color: var(--text-dim);
-            margin-top: 6px;
+            margin-top: 4px;
+            padding: 0 5px;
         }
 
         /* --- CRATE --- */
@@ -551,7 +577,7 @@
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.45);
-            z-index: 1000;
+            z-index: 2000;
             display: flex; align-items: center; justify-content: center;
             backdrop-filter: blur(5px);
             opacity: 0; pointer-events: none; transition: 0.3s;
@@ -581,28 +607,33 @@
         @media (min-width: 601px) and (max-width: 1024px) {
             .reactor-container { width: 220px; height: 220px; }
             .song-title { font-size: 1.4rem; }
-            .module-crate { height: 35vh; }
         }
 
         /* MOBILE LAYOUT */
         @media (max-width: 600px) {
+            .top-bar { padding: 10px 15px; height: 50px; }
+            .app-title { font-size: 1.2rem; }
+            .search-container { width: 140px; }
+            #searchInput { padding: 5px 8px; font-size: 0.8rem; }
+
             /* Switch Deck to Horizontal Layout */
             .player-top-wrapper {
                 flex-direction: row;
                 justify-content: space-evenly;
                 align-items: center;
                 width: 100%;
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
 
             .module-deck { 
-                padding: 10px 5px; 
-                justify-content: center; /* Center content vertically in deck */
+                padding: 10px 5px 15px 5px; 
+                justify-content: flex-start;
+                min-height: auto;
             }
 
             .reactor-container { 
-                width: 90px; 
-                height: 90px; 
+                width: 100px; 
+                height: 100px; 
                 margin-bottom: 0; 
                 flex-shrink: 0;
             }
@@ -610,54 +641,43 @@
 
             .track-display { 
                 margin-bottom: 0; 
-                text-align: left; /* Align text to reactor */
+                text-align: left; 
                 width: auto;
-                max-width: 65%; /* Prevent overlapping */
-                padding-left: 15px;
+                max-width: 60%; 
+                padding-left: 10px;
             }
             
             .song-title { 
                 font-size: 1.1rem; 
-                white-space: normal; /* Allow wrap if really long or truncate */
+                white-space: normal; 
                 line-height: 1.2;
-                max-height: 2.4em; /* Limit lines */
+                max-height: 2.4em; 
             }
 
             .control-panel { 
-                width: 95%; /* almost full width */
-                padding: 8px 5px; 
+                width: 100%; 
+                padding: 10px 5px; 
                 gap: 5px; 
                 justify-content: space-between;
+                margin-bottom: 0;
             }
-            /* Make play button bigger */
             .play-btn { width: 50px; height: 50px; font-size: 1.4rem; }
             .c-btn { width: 36px; height: 36px; }
             
-            /* Full Width Scrubber */
             .scrubber-contain { 
                 margin-top: 15px; 
                 width: 100%; 
-                padding: 0 10px; /* Safety padding */
+                padding: 0 10px;
             }
-            .scrub-bar { height: 12px; /* Easier to touch */ }
+            .scrub-bar { height: 12px; }
             
-            .module-crate { height: 40vh; } 
-            
-            .search-container {
-                position: static; /* Move search into flow or hide? */
-                /* For now, keep fixed but smaller */
-                top: 5px;
-                right: 5px;
-                width: 120px;
-                display: none; /* Hide search on mobile to clean UI, or use icon toggle (advanced) */
-            }
+            /* No height limit on crate, flex grow handles it */
         }
 
         @media (max-height: 600px) and (orientation: landscape) {
             .reactor-container { width: 80px; height: 80px; margin-bottom: 5px; }
             .module-deck { padding: 5px; }
             .song-title { font-size: 1rem; }
-            .module-crate { height: 40vh; }
         }
     </style>
 </head>
@@ -671,7 +691,7 @@
     <div class="grain"></div>
 
     <!-- STARTUP MODAL -->
-    <div class="modal-overlay active" id="startModal" style="z-index: 2000;">
+    <div class="modal-overlay active" id="startModal" style="z-index: 3000;">
         <div class="modal-content">
             <h1>AUDIO ENGINE // V999</h1>
             <br>
@@ -680,6 +700,15 @@
             </button>
         </div>
     </div>
+
+    <!-- PERMANENT TOP BAR -->
+    <header class="top-bar">
+        <div class="app-title">999 JUKEBOX</div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="SEARCH..." autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </header>
 
     <!-- CREATE PLAYLIST MODAL -->
     <div class="modal-overlay" id="createPlaylistModal">
@@ -707,12 +736,6 @@
 
     <!-- PLAYER DECK -->
     <section class="module-deck">
-        <!-- Search Bar (Desktop) -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="SEARCH DATABASE..." autocomplete="off">
-            <div id="searchResults" class="search-results"></div>
-        </div>
-
         <!-- Player Top Section (Wraps Reactor + Info for Mobile Layout) -->
         <div class="player-top-wrapper">
             <!-- Reactor Container -->
@@ -1475,6 +1498,9 @@
                             </button>
                             <button class="mini-btn mini-add" onclick="openAddToPlaylistModal(event, '${safeOrigTitle}')">
                                 <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="mini-btn mini-download" onclick="triggerDownload(event, {file:'${safeFile}', title:'${safeOrigTitle}'})">
+                                <i class="fas fa-download"></i>
                             </button>
                             <button class="mini-btn mini-hide" onclick="toggleHide(event, '${safeOrigTitle}')">
                                 <i class="fas ${isHiddenView ? 'fa-eye' : 'fa-eye-slash'}"></i>
