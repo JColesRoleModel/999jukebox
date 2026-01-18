@@ -146,6 +146,85 @@
             flex-shrink: 0;
         }
 
+        /* --- SEARCH BAR --- */
+        .search-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 220px;
+        }
+
+        #searchInput {
+            width: 100%;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--divider);
+            color: var(--chrome);
+            padding: 8px 12px;
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            border-radius: 2px;
+            outline: none;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        #searchInput::placeholder {
+            color: var(--text-dim);
+            opacity: 0.7;
+        }
+
+        #searchInput:focus {
+            border-color: var(--flame-amber);
+            background: rgba(0,0,0,0.9);
+            box-shadow: 0 0 10px rgba(218, 175, 97, 0.2);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 300px;
+            background: var(--hull);
+            border: 1px solid var(--flame-amber);
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
+            z-index: 101;
+            margin-top: 5px;
+        }
+        
+        .search-results.active {
+            display: block;
+        }
+
+        .search-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .search-item:hover {
+            background: rgba(218, 175, 97, 0.1);
+            color: var(--white);
+        }
+        
+        .search-item-title {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: #ccc;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            max-width: 90%;
+            text-transform: uppercase;
+        }
+
         /* --- THE REACTOR (UPDATED COLORS) --- */
         .reactor-container {
             width: 260px;
@@ -668,14 +747,51 @@
         }
 
         @media (max-width: 600px) {
-            .module-deck { padding: 10px; justify-content: flex-start; padding-top: 20px; }
-            .reactor-container { width: 180px; height: 180px; margin-bottom: 15px; }
-            .core-text { font-size: 2rem; }
-            .song-title { font-size: 1.2rem; max-width: 90%; }
-            .control-panel { padding: 10px 15px; gap: 8px; }
-            .c-btn { width: 35px; height: 35px; font-size: 1rem; }
-            .play-btn { width: 50px; height: 50px; font-size: 1.3rem; }
-            .module-crate { height: 45vh; }
+            .module-deck { 
+                padding: 5px; 
+                justify-content: space-evenly; 
+                padding-top: 10px; 
+                padding-bottom: 10px;
+                min-height: 0; 
+                overflow-y: hidden;
+            }
+            .reactor-container { 
+                width: 130px; 
+                height: 130px; 
+                margin-bottom: 5px; 
+                flex-shrink: 0;
+            }
+            .core-text { font-size: 1.5rem; }
+            .song-title { font-size: 1.1rem; max-width: 95%; }
+            .track-display { margin-bottom: 5px; flex-shrink: 0; }
+            .control-panel { 
+                padding: 8px 10px; 
+                gap: 5px; 
+                flex-shrink: 0;
+            }
+            .c-btn { width: 32px; height: 32px; font-size: 0.9rem; }
+            .play-btn { width: 44px; height: 44px; font-size: 1.1rem; }
+            
+            .scrubber-contain { 
+                margin-top: 10px; 
+                margin-bottom: 5px;
+                width: 90%;
+                flex-shrink: 0;
+            }
+            
+            .module-crate { height: 40vh; } 
+            
+            /* Hide Search Input on Mobile to save space, user can scroll to find */
+            /* Or make it smaller */
+            .search-container {
+                top: 10px;
+                right: 10px;
+                width: 140px;
+            }
+            #searchInput {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+            }
         }
 
         @media (max-height: 600px) and (orientation: landscape) {
@@ -737,6 +853,12 @@
 
     <!-- PLAYER DECK -->
     <section class="module-deck">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="SEARCH DATABASE..." autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
         <!-- Reactor Container with Pause capability -->
         <div class="reactor-container paused" id="reactor">
             <div class="reactor-ring"></div>
@@ -944,6 +1066,8 @@
         const currentPlaylistName = document.getElementById('currentPlaylistName');
         const starLayer = document.getElementById('starLayer');
         const plEditControls = document.getElementById('plEditControls');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
 
         /* --- INIT --- */
         function init() {
@@ -1103,6 +1227,50 @@
             playCounts[originalTitle] = (playCounts[originalTitle] || 0) + 1;
             localStorage.setItem('jw999_playcounts', JSON.stringify(playCounts));
         }
+
+        /* --- SEARCH LOGIC --- */
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if(term.length < 1) {
+                searchResults.classList.remove('active');
+                return;
+            }
+            
+            const matches = songs.filter(s => s.title.toLowerCase().includes(term));
+            renderSearchResults(matches);
+        });
+
+        function renderSearchResults(matches) {
+            searchResults.innerHTML = '';
+            if(matches.length === 0) {
+                searchResults.innerHTML = '<div style="padding:10px; color:#555;">NO DATA FOUND</div>';
+            } else {
+                matches.forEach(song => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.innerHTML = `<span class="search-item-title">${song.title}</span> <i class="fas fa-play" style="font-size:0.7rem; color:var(--flame-amber)"></i>`;
+                    div.onclick = () => {
+                        // Play the selected song
+                        const realIndex = songs.findIndex(s => s.id === song.id);
+                        if(realIndex > -1) {
+                            loadSong(songs[realIndex]);
+                            playSong();
+                        }
+                        searchInput.value = '';
+                        searchResults.classList.remove('active');
+                    };
+                    searchResults.appendChild(div);
+                });
+            }
+            searchResults.classList.add('active');
+        }
+
+        // Close search on outside click
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.remove('active');
+            }
+        });
 
         /* --- ACTIONS --- */
         function toggleCurrentLike() {
