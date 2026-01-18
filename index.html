@@ -508,7 +508,7 @@
         }
 
         .pl-info { font-family: var(--font-ui); color: var(--flame-amber); font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
-        .pl-actions-group { display: flex; gap: 10px; }
+        .pl-actions-group { display: flex; gap: 10px; align-items: center; }
 
         .pl-act-btn {
             border: none;
@@ -527,11 +527,12 @@
         .pl-act-btn.play:hover { background: #fff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); }
         .pl-act-btn.shuffle { background: var(--rust-blaze); color: #fff; box-shadow: 0 0 10px rgba(190, 91, 69, 0.4); }
         .pl-act-btn.shuffle:hover { background: #ff4d4d; box-shadow: 0 0 15px rgba(255, 77, 77, 0.6); }
+        .pl-act-btn.delete { background: var(--panel); color: var(--text-dim); border: 1px solid var(--divider); box-shadow: none; font-size: 0.8rem; padding: 6px 12px; }
+        .pl-act-btn.delete:hover { color: var(--rust-blaze); border-color: var(--rust-blaze); }
 
         .pl-edit-btn { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; }
         .pl-edit-btn:hover { color: var(--chrome); }
-        .pl-delete-btn:hover { color: var(--rust-blaze); }
-
+        
         .track-list {
             flex: 1;
             overflow-y: auto;
@@ -571,6 +572,7 @@
         .mini-download:hover { color: var(--flame-amber); }
         .mini-add:hover { color: var(--glow-purple); }
         .mini-hide:hover { color: #888; }
+        .mini-remove:hover { color: var(--rust-blaze); }
         .mini-edit:hover { color: var(--chrome); }
 
         /* --- MODALS --- */
@@ -795,6 +797,7 @@
             <div class="pl-actions-group">
                 <button class="pl-act-btn play" onclick="playCurrentView(false)"><i class="fas fa-play"></i> PLAY</button>
                 <button class="pl-act-btn shuffle" onclick="playCurrentView(true)"><i class="fas fa-random"></i> SHUFFLE</button>
+                <!-- Delete Button Injected via JS -->
             </div>
         </div>
 
@@ -812,6 +815,7 @@
         
         // VOLUME 1
         const SONGS_V1 = [
+            "Boss Of Me.mp3",
             "_38 Special (Go Go).mp3", "20_20 Vison.mp3", "25 Dark Place _ Denial.mp3", "27 Club.mp3", "Again (Watch Yo_ Step).mp3", 
             "Alaska (whip).mp3", "Anacondas.mp3", "Anakin.mp3", "Attachments.mp3", "Back in Chicago w_ Young Thug.mp3", 
             "Bad Boy.mp3", "Baguettes.mp3", "Birds Eye View.mp3", "Blue Cash.mp3", "Body Bag.mp3", "Both Ways.mp3", 
@@ -856,7 +860,7 @@
             "Forever Is Whatever .mp3", "Forget Me Not.mp3", "Forget the Past.mp3", "Fuego.mp3", "Fun Time.mp3", "Handle It.mp3", "Happy Life.mp3", 
             "Heading South.mp3", "Heavy Metal.mp3", "Hectic.mp3", "High Tide.mp3", "Higher.mp3", "House in the Hills.mp3", 
             "Hypnotic Full Session - juice wrld.mp3", "I Want This Forever .mp3", "In My Bag.mp3", "It’s 4AM.mp3", 
-            "Juice WRLD   Boss Of Me  Lyrics.mp3", "Juice WRLD  -  High Again (Unreleased).mp3", "Juice WRLD -  Cowboy Hunt (Unreleased).mp3", 
+            "Juice WRLD  -  High Again (Unreleased).mp3", "Juice WRLD -  Cowboy Hunt (Unreleased).mp3", 
             "Juice WRLD -  Extra (CDQ Remaster) (Remaster W⧸ New Snippets) w⧸official beat.mp3", "juice wrld - ＂you don't know me＂ (unreleased the party never ends).mp3", 
             "Juice WRLD - 24⧸7 (365) (New Leak⧸CDQ) (Prod. Danny Wolf, DILIP & Instupendo).mp3", "67 / martian.mp3", "Juice Wrld - 911 (Lyrics).mp3", 
             "Juice WRLD - Afterlife (New Leak).mp3", "Juice WRLD - All Your Sins ⧸ Ace Of Spades (NEW LEAK).mp3", "Juice WRLD - Anacondas (NEW) Highest Quality.mp3", 
@@ -888,15 +892,15 @@
             "Juice WRLD & Roddy Ricch - Soda Pop (Unreleased).mp3", "Juice WRLD & Young Thug - Bye Bye Baby.mp3", "Juice WRLD Lose A Dream Full Studio Session.mp3", 
             "Juice Wrld Quitter FULL AUDIO (unreleased).mp3", "used to extended.mp3", "Juice Wrld X Young Thug - Baguettes (Leaked Today).mp3", 
             "Juice WRLD- Bad news (Unreleased) Official Audio.mp3", "Juice Wrld-JetLag Unreleased.mp3", "Juice WRLD-Wake Up-(unreleased).mp3", 
-            "Juice WRLD, Marshmello - We Don't Get Along.mp3", "Juice WRLD： GoPro.mp3", "rain dance.mp3", "JuiceWRLD： Time.mp3", "Karate Kid.mp3", 
+            "Juice WRLD： GoPro.mp3", "rain dance.mp3", "JuiceWRLD： Time.mp3", "Karate Kid.mp3", 
             "Kick Back.mp3", "Kinda Lonely.mp3", "Late Night Drives.mp3", "Legends Never Die - Chrissy Costanza spin the bottle tour DC.mp3", 
-            "Lighter.mp3", "Loser.mp3", "Lost In Your Feels .mp3", "Lost Love.mp3", "Lost.mp3", "Mind Games.mp3", 
+            "Lighter.mp3", "Lil Uzi Vert - Doin The Most.mp3", "Loser.mp3", "Lost In Your Feels .mp3", "Lost Love.mp3", "Lost.mp3", "Mind Games.mp3", 
             "Mistake.mp3", "Monster.mp3", "Monsters in My Basement.mp3", "Morning.mp3", "Murakami.mp3", "Naruto vs Sauske- Demon Love.mp3", 
             "No Friends.mp3", "No Jumper.mp3", "not perfect.mp3", "Novocaine.mp3", "Oh Dear (NLMB).mp3", "OLD ME ﹤⧸3.mp3", "On My Mind Juice Wlrd Unreleased.mp3", 
             "On My Mind.mp3", "Passed Out .mp3", "Pay Day.mp3", "Problem Solvers.mp3", "Purple Ocean.mp3", "Purple Substance.mp3", 
             "Racks In (Racks Off) - juice wrld.mp3", "Rare Leaked Live Stream - Blood On My Jeans - Juice WRLD + Freestyle.mp3", "Real Right.mp3", 
             "red moonlight.mp3", "Relapse Again.mp3", "Remind Me Of The Summer Full With Stems For YT Music.mp3", "Ribbit.mp3", "ROCKSTAR GIRL.mp3", 
-            "Runners.mp3", "RV rental companies cash in with help from tech companies.mp3", "Saved By The Bell.mp3", "Scarface.mp3", 
+            "Runners.mp3", "Saved By The Bell.mp3", "Scarface.mp3", 
             "Sleep Paralysis - Juice WRLD (Studio Session).mp3", "Spanglish.mp3", "Spilt My Brains (808 Freestyle) - juice wrld.mp3", "Spinning.mp3", 
             "Stay Sober .mp3", "Stolen.mp3", "Styrofoam (Super Saiyan).mp3", "Suffering.mp3", "Tag - Juice WRLD (CDQ Audio).mp3", "Tag Along.mp3", 
             "Take Me Back.mp3", "Take My Soul.mp3", "Tattoos and Ink.mp3", "Tears (OKAY v2) -juice wrld.mp3", "Temporary.mp3", "Terrified.mp3", 
@@ -1399,6 +1403,16 @@
             }
         }
 
+        function removeFromCurrentPlaylist(e, originalTitle) {
+            if(e) e.stopPropagation();
+            const pl = playlists.find(p => p.id === currentTab);
+            if(!pl) return;
+            
+            pl.songs = pl.songs.filter(t => t !== originalTitle);
+            localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
+            updatePlaylistView();
+        }
+
         /* --- NAVIGATION --- */
         function switchTab(tab) {
             currentTab = tab;
@@ -1420,6 +1434,11 @@
         function updatePlaylistView() {
             let label = "DATABASE";
             plEditControls.innerHTML = ''; 
+            
+            // Handle deleting the dynamic delete button if it exists
+            const actionsGroup = document.querySelector('.pl-actions-group');
+            const existingDel = actionsGroup.querySelector('.pl-delete-main');
+            if(existingDel) existingDel.remove();
 
             if (currentTab === 'all') {
                 currentPlaylist = songs.filter(s => !hiddenSongs.includes(s.originalTitle));
@@ -1440,8 +1459,16 @@
                     label = pl.name;
                     plEditControls.innerHTML = `
                         <button class="pl-edit-btn" onclick="editPlaylistName()"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="pl-edit-btn pl-delete-btn" onclick="deletePlaylist()"><i class="fas fa-trash"></i></button>
                     `;
+                    
+                    // Add delete playlist button
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'pl-act-btn delete pl-delete-main';
+                    delBtn.innerHTML = '<i class="fas fa-trash"></i> DELETE';
+                    delBtn.onclick = deletePlaylist;
+                    delBtn.style.fontSize = '0.8rem';
+                    delBtn.style.padding = '5px 10px';
+                    actionsGroup.appendChild(delBtn);
                 } else {
                     currentPlaylist = [];
                 }
@@ -1472,15 +1499,24 @@
                 return;
             }
 
+            const isCustomPlaylist = !['all', 'saved', 'hidden'].includes(currentTab);
+
             const html = currentPlaylist.map((song, idx) => {
                 const isLiked = likedSongs.includes(song.originalTitle);
                 const isActive = currentPlaylist[currentIndex] && currentPlaylist[currentIndex].id === song.id;
                 const playCount = playCounts[song.originalTitle] || 0;
                 const isHiddenView = currentTab === 'hidden';
                 
-                // Safe string for onclick
                 const safeOrigTitle = song.originalTitle.replace(/'/g, "\\'");
                 const safeFile = song.file.replace(/'/g, "\\'");
+
+                // Determine the 4th button
+                let actionBtn4 = '';
+                if (isCustomPlaylist) {
+                    actionBtn4 = `<button class="mini-btn mini-remove" title="Remove from Playlist" onclick="removeFromCurrentPlaylist(event, '${safeOrigTitle}')"><i class="fas fa-trash"></i></button>`;
+                } else {
+                    actionBtn4 = `<button class="mini-btn mini-hide" onclick="toggleHide(event, '${safeOrigTitle}')"><i class="fas ${isHiddenView ? 'fa-eye' : 'fa-eye-slash'}"></i></button>`;
+                }
 
                 return `
                 <div class="track-item ${isActive ? 'playing' : ''}" id="track-${song.id}" onclick="playSpecific(${song.id})">
@@ -1503,9 +1539,7 @@
                             <button class="mini-btn mini-download" onclick="triggerDownload(event, ${song.id})">
                                 <i class="fas fa-download"></i>
                             </button>
-                            <button class="mini-btn mini-hide" onclick="toggleHide(event, '${safeOrigTitle}')">
-                                <i class="fas ${isHiddenView ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                            </button>
+                            ${actionBtn4}
                         </div>
                     </div>
                 </div>`;
