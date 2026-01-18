@@ -14,18 +14,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- THEME VARIABLES --- */
+        /* --- THEME VARIABLES (DEATH RACE // GRUNGE) --- */
         :root {
-            --void: #050508;
-            --hull: #121216;
-            --panel: #1a1a20;
-            --chrome: #e0e0e0;
-            --text-dim: #8a8a9b;
+            /* Core Neutrals */
+            --void: #010001;
+            --hull: #1E1413;       /* Oil Charcoal */
+            --panel: #2A1E1D;      /* Soot Brown */
+            --divider: #413935;    /* Ash Brown */
             
-            --neon-purple: #b026ff;
-            --neon-blue: #00f3ff;
-            --plasma-orange: #ff5e00;
-            --alert-red: #ff2a2a;
+            /* Chrome & Metal */
+            --chrome: #DBD5D3;     /* Steel Silver */
+            --chrome-dim: #C9C2C0; /* Cold Chrome */
+            --text-dim: #A8A4A2;   /* Gunmetal Gray */
+            
+            /* Accents */
+            --nebula-purple: #563960;
+            --deep-purple: #2E142E;
+            --glow-purple: #855F8A; /* Soft Violet */
+            --flame-amber: #DAAF61; /* Sparks */
+            --rust-blaze: #BE5B45;  /* Heat/Danger */
             
             --font-display: 'Orbitron', sans-serif;
             --font-ui: 'Oxanium', monospace;
@@ -35,7 +42,7 @@
         * {
             box-sizing: border-box;
             scrollbar-width: thin;
-            scrollbar-color: var(--neon-purple) var(--hull);
+            scrollbar-color: var(--rust-blaze) var(--hull);
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -53,12 +60,13 @@
             flex-direction: column;
         }
 
-        /* --- PROCEDURAL BACKGROUND --- */
+        /* --- PROCEDURAL BACKGROUND (SMOKE & ASPHALT) --- */
         .starfield {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at center, #1a0b2e 0%, var(--void) 70%);
+            /* Smoky gradient */
+            background: radial-gradient(circle at 50% 120%, #2a1010 0%, var(--void) 70%);
             overflow: hidden;
         }
 
@@ -68,18 +76,27 @@
             left: -50%;
             width: 200%;
             height: 50%;
+            /* Gritty Grid */
             background: 
-                linear-gradient(transparent 0%, var(--neon-purple) 2px, transparent 3px),
-                linear-gradient(90deg, transparent 0%, var(--neon-purple) 2px, transparent 3px);
-            background-size: 100px 100px;
-            transform: perspective(500px) rotateX(60deg);
-            opacity: 0.15;
-            animation: gridMove 20s linear infinite;
+                linear-gradient(transparent 0%, var(--divider) 1px, transparent 2px),
+                linear-gradient(90deg, transparent 0%, var(--divider) 1px, transparent 2px);
+            background-size: 60px 60px;
+            transform: perspective(300px) rotateX(70deg);
+            opacity: 0.2;
+            animation: gridMove 10s linear infinite;
+        }
+        
+        /* Grain Overlay */
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
         }
 
         @keyframes gridMove {
-            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
-            100% { transform: perspective(500px) rotateX(60deg) translateY(100px); }
+            0% { transform: perspective(300px) rotateX(70deg) translateY(0); }
+            100% { transform: perspective(300px) rotateX(70deg) translateY(60px); }
         }
 
         /* --- LAYOUT STRUCTURE --- */
@@ -97,23 +114,23 @@
         }
 
         .separator-belt {
-            height: 12px;
+            height: 8px;
             background: repeating-linear-gradient(
                 45deg,
                 var(--panel),
                 var(--panel) 10px,
-                var(--hull) 10px,
-                var(--hull) 20px
+                var(--void) 10px,
+                var(--void) 20px
             );
-            border-top: 1px solid var(--neon-purple);
-            border-bottom: 1px solid var(--neon-purple);
-            box-shadow: 0 0 15px var(--neon-purple);
+            border-top: 1px solid var(--rust-blaze);
+            border-bottom: 1px solid var(--rust-blaze);
+            box-shadow: 0 0 10px rgba(190, 91, 69, 0.3);
             z-index: 10;
             flex-shrink: 0;
         }
 
         .module-crate {
-            height: 40vh;
+            height: 45vh;
             background: var(--hull);
             display: flex;
             flex-direction: column;
@@ -121,7 +138,7 @@
             flex-shrink: 0;
         }
 
-        /* --- THE REACTOR --- */
+        /* --- THE REACTOR (UPDATED COLORS) --- */
         .reactor-container {
             width: 260px;
             height: 260px;
@@ -129,7 +146,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
             flex-shrink: 0;
         }
@@ -138,7 +155,7 @@
             position: absolute;
             width: 100%; height: 100%;
             border-radius: 50%;
-            border: 2px dashed var(--text-dim);
+            border: 2px dashed var(--divider);
             animation: spin 60s linear infinite;
         }
 
@@ -147,9 +164,9 @@
             width: 80%; height: 80%;
             border-radius: 50%;
             border: 4px solid var(--panel);
-            border-top-color: var(--neon-purple);
-            border-bottom-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(176, 38, 255, 0.2);
+            border-top-color: var(--rust-blaze);
+            border-bottom-color: var(--glow-purple);
+            box-shadow: 0 0 20px rgba(190, 91, 69, 0.1);
             animation: spin 4s linear infinite reverse;
         }
 
@@ -157,11 +174,11 @@
             width: 60%; height: 60%;
             background: radial-gradient(circle, var(--panel) 30%, #000 100%);
             border-radius: 50%;
-            border: 1px solid var(--neon-purple);
+            border: 1px solid var(--flame-amber);
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 30px var(--neon-purple);
+            box-shadow: inset 0 0 30px rgba(218, 175, 97, 0.2);
             z-index: 2;
         }
 
@@ -170,14 +187,14 @@
             font-weight: 900;
             font-size: 3rem;
             color: #fff;
-            text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
+            text-shadow: 0 0 10px var(--flame-amber);
             letter-spacing: -2px;
         }
 
         .reactor-active .reactor-mid {
             animation-duration: 2s;
-            box-shadow: 0 0 40px rgba(176, 38, 255, 0.5);
-            border-top-color: var(--plasma-orange);
+            box-shadow: 0 0 30px rgba(190, 91, 69, 0.4);
+            border-top-color: var(--flame-amber);
         }
         
         .reactor-active .core-text {
@@ -186,8 +203,8 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulseText { 
-            0% { text-shadow: 0 0 10px var(--neon-purple); opacity: 0.9; }
-            100% { text-shadow: 0 0 25px var(--plasma-orange); opacity: 1; }
+            0% { text-shadow: 0 0 10px var(--flame-amber); opacity: 0.9; }
+            100% { text-shadow: 0 0 25px var(--rust-blaze); opacity: 1; }
         }
 
         /* --- PLAYER CONTROLS --- */
@@ -206,8 +223,8 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 5px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            color: var(--chrome);
+            text-shadow: 0 0 5px rgba(255,255,255,0.1);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -219,24 +236,26 @@
             font-family: var(--font-display);
             font-size: 0.7rem;
             background: var(--panel);
-            border: 1px solid var(--text-dim);
-            color: var(--text-dim);
+            border: 1px solid var(--divider);
+            color: var(--flame-amber);
             margin-top: 5px;
+            letter-spacing: 1px;
         }
 
         .control-panel {
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(30, 20, 19, 0.8);
             padding: 15px 25px;
-            border-radius: 40px;
-            border: 1px solid var(--panel);
+            border-radius: 4px;
+            border: 1px solid var(--divider);
             backdrop-filter: blur(5px);
             flex-shrink: 0;
             flex-wrap: wrap;
             justify-content: center;
             max-width: 100%;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
 
         .c-btn {
@@ -251,38 +270,38 @@
             border-radius: 50%;
         }
 
-        .c-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
-        .c-btn.active { color: var(--plasma-orange); text-shadow: 0 0 10px var(--plasma-orange); }
+        .c-btn:hover { color: var(--flame-amber); text-shadow: 0 0 5px var(--flame-amber); }
+        .c-btn.active { color: var(--rust-blaze); text-shadow: 0 0 10px var(--rust-blaze); }
 
         .play-btn {
             width: 60px; height: 60px;
             font-size: 1.6rem;
-            border: 2px solid var(--chrome);
+            border: 2px solid var(--chrome-dim);
             color: var(--chrome);
-            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
         
         .play-btn:hover {
-            border-color: var(--neon-purple);
-            color: var(--neon-purple);
-            box-shadow: 0 0 20px var(--neon-purple);
+            border-color: var(--flame-amber);
+            color: var(--flame-amber);
+            box-shadow: 0 0 15px var(--flame-amber);
         }
 
         .like-main-btn.liked {
-            color: var(--alert-red);
+            color: var(--rust-blaze);
             animation: beat 0.3s;
         }
 
-        .action-btn { color: var(--neon-blue); }
-        .action-btn:hover { color: #fff; text-shadow: 0 0 8px var(--neon-blue); }
+        .action-btn:hover { color: var(--flame-amber); }
 
         @keyframes beat { 50% { transform: scale(1.3); } }
 
-        /* Progress Bar */
+        /* Progress Bar (Visible Duration on Hover) */
         .scrubber-contain {
             width: 80%; max-width: 400px;
             margin-top: 20px;
             flex-shrink: 0;
+            position: relative;
         }
         
         .scrub-bar {
@@ -293,15 +312,34 @@
         }
         
         .scrub-fill {
-            height: 4px; background: var(--neon-blue);
+            height: 4px; background: var(--flame-amber);
             width: 0%;
-            box-shadow: 0 0 10px var(--neon-blue);
+            box-shadow: 0 0 10px var(--flame-amber);
             position: relative;
         }
 
         .scrub-fill::after {
             content: ''; position: absolute; right: -4px; top: -3px;
             width: 10px; height: 10px; background: #fff; border-radius: 50%;
+        }
+
+        /* The floating duration label */
+        .duration-label {
+            position: absolute;
+            top: -15px; 
+            width: 100%;
+            text-align: center;
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        /* Show on hover of container */
+        .scrubber-contain:hover .duration-label {
+            opacity: 1;
         }
 
         .time-stamps {
@@ -316,15 +354,14 @@
             background: #000;
             flex-shrink: 0;
             border-bottom: 2px solid var(--panel);
-            overflow-x: auto; /* Allow horizontal scroll for tabs */
-            scrollbar-width: none; /* Hide scrollbar Firefox */
+            overflow-x: auto;
+            scrollbar-width: none;
         }
-        
-        .crate-header::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
+        .crate-header::-webkit-scrollbar { display: none; }
 
         .crate-tab {
             flex-shrink: 0;
-            padding: 15px 25px;
+            padding: 15px 20px;
             background: #0a0a0e;
             color: var(--text-dim);
             border: none;
@@ -345,18 +382,59 @@
 
         .crate-tab.active {
             background: var(--hull);
-            color: var(--neon-purple);
-            box-shadow: inset 0 -3px 0 var(--neon-purple);
+            color: var(--flame-amber);
+            box-shadow: inset 0 -3px 0 var(--flame-amber);
         }
 
         .crate-tab-create {
-            background: var(--deep-purple);
+            background: var(--panel);
             color: var(--chrome);
             border-right: none;
             border-left: 1px solid var(--panel);
             position: sticky;
             right: 0;
             z-index: 2;
+        }
+
+        /* New Playlist Sub-controls */
+        .playlist-controls {
+            background: var(--panel);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--divider);
+            flex-shrink: 0;
+        }
+
+        .pl-info {
+            font-family: var(--font-ui);
+            color: var(--flame-amber);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .pl-actions-group {
+            display: flex; gap: 10px;
+        }
+
+        .pl-act-btn {
+            background: transparent;
+            border: 1px solid var(--divider);
+            color: var(--chrome);
+            padding: 5px 12px;
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .pl-act-btn:hover {
+            border-color: var(--flame-amber);
+            color: var(--flame-amber);
+            background: rgba(218, 175, 97, 0.1);
         }
 
         .track-list {
@@ -373,17 +451,17 @@
             padding: 12px 20px;
             border-bottom: 1px solid rgba(255,255,255,0.03);
             font-family: var(--font-body);
-            color: #aaa;
+            color: #888;
             cursor: pointer;
             transition: 0.2s;
         }
 
-        .track-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .track-item:hover { background: rgba(218, 175, 97, 0.05); color: #fff; }
         
         .track-item.playing {
-            background: linear-gradient(90deg, rgba(176, 38, 255, 0.1), transparent);
-            border-left: 4px solid var(--neon-purple);
-            color: var(--neon-blue);
+            background: linear-gradient(90deg, rgba(190, 91, 69, 0.2), transparent);
+            border-left: 4px solid var(--rust-blaze);
+            color: var(--flame-amber);
         }
 
         .track-left {
@@ -407,7 +485,7 @@
             font-family: var(--font-ui);
             font-size: 0.75rem;
             color: var(--text-dim);
-            background: rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.3);
             padding: 2px 6px;
             border-radius: 4px;
         }
@@ -419,16 +497,16 @@
         }
 
         .mini-btn {
-            background: none; border: none; color: #444; font-size: 0.9rem; cursor: pointer;
+            background: none; border: none; color: #555; font-size: 0.9rem; cursor: pointer;
             padding: 5px;
             transition: color 0.2s;
         }
-        .mini-btn:hover { color: #fff; }
+        .mini-btn:hover { color: var(--chrome); }
         
-        .mini-heart.liked { color: var(--alert-red); }
-        .mini-download:hover { color: var(--neon-blue); }
-        .mini-add:hover { color: var(--plasma-orange); }
-        .mini-hide:hover { color: #777; }
+        .mini-heart.liked { color: var(--rust-blaze); }
+        .mini-download:hover { color: var(--flame-amber); }
+        .mini-add:hover { color: var(--glow-purple); }
+        .mini-hide:hover { color: #888; }
 
         /* --- MODALS --- */
         .modal-overlay {
@@ -444,10 +522,10 @@
 
         .modal-content {
             background: var(--hull);
-            border: 1px solid var(--neon-purple);
+            border: 1px solid var(--rust-blaze);
             padding: 30px;
             text-align: center;
-            box-shadow: 0 0 50px rgba(176, 38, 255, 0.2);
+            box-shadow: 0 0 50px rgba(190, 91, 69, 0.2);
             position: relative;
             max-width: 400px; width: 90%;
         }
@@ -471,7 +549,7 @@
             font-size: 1rem;
         }
         
-        .modal-input:focus { outline: none; border-color: var(--neon-purple); }
+        .modal-input:focus { outline: none; border-color: var(--flame-amber); }
 
         .icon-grid {
             display: grid;
@@ -490,7 +568,7 @@
         }
         
         .icon-option:hover { color: #fff; background: rgba(255,255,255,0.1); }
-        .icon-option.selected { border-color: var(--neon-purple); color: var(--neon-purple); }
+        .icon-option.selected { border-color: var(--flame-amber); color: var(--flame-amber); }
 
         .playlist-select-list {
             text-align: left;
@@ -510,8 +588,8 @@
 
         .modal-btn {
             background: transparent;
-            border: 1px solid var(--plasma-orange);
-            color: var(--plasma-orange);
+            border: 1px solid var(--flame-amber);
+            color: var(--flame-amber);
             padding: 10px 20px;
             font-family: var(--font-ui);
             font-size: 1rem;
@@ -522,7 +600,7 @@
         }
 
         .modal-btn:hover {
-            background: var(--plasma-orange);
+            background: var(--flame-amber);
             color: #000;
         }
         
@@ -565,12 +643,13 @@
     <div class="starfield">
         <div class="grid-floor"></div>
     </div>
+    <div class="grain"></div>
 
     <!-- STARTUP MODAL -->
     <div class="modal-overlay active" id="startModal" style="z-index: 2000;">
         <div class="modal-content">
             <h1>999 SYSTEM</h1>
-            <p style="color:var(--text-dim); font-family:var(--font-ui);">AUDIO ENGINE // V3.0 // LOADED</p>
+            <p style="color:var(--text-dim); font-family:var(--font-ui);">DRFL AUDIO ENGINE // V3.1</p>
             <button class="modal-btn" onclick="startSystem()">
                 <i class="fas fa-power-off"></i> IGNITE
             </button>
@@ -617,7 +696,7 @@
         </div>
 
         <div class="control-panel">
-            <button class="c-btn" id="shuffleBtn" title="Shuffle"><i class="fas fa-random"></i></button>
+            <button class="c-btn" id="shuffleBtn" title="Shuffle Global"><i class="fas fa-random"></i></button>
             <button class="c-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
             <button class="c-btn play-btn" id="playBtn"><i class="fas fa-play"></i></button>
             <button class="c-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
@@ -626,12 +705,16 @@
         </div>
 
         <div class="scrubber-contain">
+            <!-- Floating Duration Label -->
+            <div class="duration-label" id="hoverDuration">0:00</div>
+            
             <div class="scrub-bar" id="progressArea">
                 <div class="scrub-fill" id="progressBar"></div>
             </div>
             <div class="time-stamps">
                 <span id="currTime">0:00</span>
-                <span id="totTime">0:00</span>
+                <!-- Optional: Hide total time here since it's on hover now, or keep both. Keeping for usability on mobile where hover is tricky -->
+                <span id="totTime" style="opacity: 0.5;">0:00</span>
             </div>
         </div>
     </section>
@@ -643,11 +726,21 @@
     <section class="module-crate">
         <div class="crate-header" id="crateHeader">
             <button class="crate-tab active" id="tabAll" onclick="switchTab('all')">DATABASE</button>
-            <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')"><i class="fas fa-heart" style="color: var(--alert-red);"></i></button>
+            <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')"><i class="fas fa-heart" style="color: var(--rust-blaze);"></i></button>
             <button class="crate-tab" id="tabHidden" onclick="switchTab('hidden')"><i class="fas fa-archive"></i></button>
             <!-- Custom playlist tabs will be inserted here -->
             <button class="crate-tab crate-tab-create" onclick="openCreatePlaylistModal()"><i class="fas fa-plus"></i></button>
         </div>
+        
+        <!-- NEW: Playlist Specific Controls -->
+        <div class="playlist-controls" id="playlistControls">
+            <span class="pl-info" id="currentPlaylistName">DATABASE</span>
+            <div class="pl-actions-group">
+                <button class="pl-act-btn" onclick="playCurrentView(false)"><i class="fas fa-play"></i> PLAY VIEW</button>
+                <button class="pl-act-btn" onclick="playCurrentView(true)"><i class="fas fa-random"></i> SHUFFLE VIEW</button>
+            </div>
+        </div>
+
         <div class="track-list" id="playlistContainer">
             <!-- Items injected via JS -->
         </div>
@@ -784,6 +877,7 @@
         const progressBar = document.getElementById('progressBar');
         const currTimeEl = document.getElementById('currTime');
         const totTimeEl = document.getElementById('totTime');
+        const hoverDuration = document.getElementById('hoverDuration');
         const playlistContainer = document.getElementById('playlistContainer');
         const startModal = document.getElementById('startModal');
         const reactor = document.getElementById('reactor');
@@ -791,6 +885,7 @@
         const mainLikeBtn = document.getElementById('mainLikeBtn');
         const mainDownloadBtn = document.getElementById('mainDownloadBtn');
         const crateHeader = document.getElementById('crateHeader');
+        const currentPlaylistName = document.getElementById('currentPlaylistName');
 
         /* --- INIT --- */
         function init() {
@@ -841,7 +936,7 @@
             mainTitle.innerText = song.title;
             audio.src = song.file;
             statusBadge.innerText = "BUFFERING...";
-            statusBadge.style.color = "var(--neon-blue)";
+            statusBadge.style.color = "var(--flame-amber)";
             progressBar.style.width = '0%';
             
             // Increment Play Count
@@ -850,8 +945,6 @@
             updateMainLikeBtn(song.title);
             highlightTrack(song.id);
             
-            // Re-render playlist to show updated playcount instantly
-            // Note: In a massive list this might be heavy, but fine for ~200 songs
             renderPlaylist(); 
 
             if ('mediaSession' in navigator) {
@@ -872,8 +965,8 @@
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 reactor.classList.add('reactor-active');
                 statusBadge.innerText = "ACTIVE // 120MPH";
-                statusBadge.style.color = "var(--plasma-orange)";
-                statusBadge.style.borderColor = "var(--plasma-orange)";
+                statusBadge.style.color = "var(--flame-amber)";
+                statusBadge.style.borderColor = "var(--flame-amber)";
             }).catch(e => console.log(e));
         }
 
@@ -1006,15 +1099,10 @@
         }
 
         function renderPlaylistTabs() {
-            // Remove existing custom tabs (keep first 3 static tabs + create button)
-            const staticTabs = Array.from(crateHeader.querySelectorAll('.crate-tab:not(.crate-tab-create)'));
             // Reset to just default tabs 
-            // Indices: 0=DB, 1=Saved, 2=Hidden. We want to keep these.
-            
-            // Clean slate strategy: Rebuild header innerHTML to ensure order
             crateHeader.innerHTML = `
                 <button class="crate-tab" id="tabAll" onclick="switchTab('all')">DATABASE</button>
-                <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')"><i class="fas fa-heart" style="color: var(--alert-red);"></i></button>
+                <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')"><i class="fas fa-heart" style="color: var(--rust-blaze);"></i></button>
                 <button class="crate-tab" id="tabHidden" onclick="switchTab('hidden')"><i class="fas fa-archive"></i></button>
             `;
             
@@ -1089,26 +1177,47 @@
         }
 
         function updatePlaylistView() {
+            let label = "DATABASE";
             if (currentTab === 'all') {
-                // Show all EXCEPT hidden
                 currentPlaylist = songs.filter(s => !hiddenSongs.includes(s.title));
+                label = "DATABASE";
             } 
             else if (currentTab === 'saved') {
                 currentPlaylist = songs.filter(s => likedSongs.includes(s.title));
+                label = "SAVED CRATE";
             } 
             else if (currentTab === 'hidden') {
                 currentPlaylist = songs.filter(s => hiddenSongs.includes(s.title));
+                label = "ARCHIVED";
             } 
             else {
                 // Custom Playlist
                 const pl = playlists.find(p => p.id === currentTab);
                 if(pl) {
                     currentPlaylist = songs.filter(s => pl.songs.includes(s.title));
+                    label = pl.name;
                 } else {
                     currentPlaylist = [];
                 }
             }
+            currentPlaylistName.innerText = label;
             renderPlaylist();
+        }
+
+        // Logic for playlist specific controls
+        function playCurrentView(shuffle) {
+            if(currentPlaylist.length === 0) return alert("EMPTY VIEW");
+            
+            isShuffle = shuffle;
+            if(isShuffle) {
+                currentIndex = Math.floor(Math.random() * currentPlaylist.length);
+                shuffleBtn.classList.add('active');
+            } else {
+                currentIndex = 0;
+                shuffleBtn.classList.remove('active');
+            }
+            loadSong(currentPlaylist[currentIndex]);
+            playSong();
         }
 
         function renderPlaylist() {
@@ -1125,7 +1234,6 @@
                 const playCount = playCounts[song.title] || 0;
                 const isHiddenView = currentTab === 'hidden';
                 
-                // Escape strings for onclick handlers
                 const safeTitle = song.title.replace(/'/g, "\\'");
                 const safeFile = song.file.replace(/'/g, "\\'");
 
@@ -1160,11 +1268,9 @@
             if(currentPlaylist[currentIndex]) highlightTrack(currentPlaylist[currentIndex].id);
         }
 
-        // Global handler for HTML string onclicks
         window.playSpecific = function(id) {
             const realIndex = songs.findIndex(s => s.id === id);
             if(realIndex > -1) {
-                // Logic to update UI index based on visual list
                 const visIndex = currentPlaylist.findIndex(s => s.id === id);
                 if(visIndex > -1) currentIndex = visIndex;
                 loadSong(songs[realIndex]);
@@ -1195,6 +1301,8 @@
             if(isNaN(dur)) return;
             progressBar.style.width = (cur / dur) * 100 + '%';
             currTimeEl.innerText = formatTime(cur);
+            // Updating the hovering total time
+            hoverDuration.innerText = formatTime(dur); 
             totTimeEl.innerText = formatTime(dur);
         });
         
