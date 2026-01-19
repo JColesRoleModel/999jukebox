@@ -5,678 +5,184 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DEATH RACE // 999 JUKEBOX</title>
     
-    <!-- FAVICON (999 CIRCLE) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23010001' stroke='%23DAAF61' stroke-width='5'/><text x='50' y='65' font-family='sans-serif' font-size='40' font-weight='bold' fill='%23fff' text-anchor='middle'>999</text></svg>">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Oxanium:wght@400;600;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         /* --- THEME VARIABLES (DEATH RACE // GRUNGE) --- */
         :root {
-            /* Core Neutrals */
             --void: #010001;
-            --hull: #1E1413;       /* Oil Charcoal */
-            --panel: #2A1E1D;      /* Soot Brown */
-            --divider: #413935;    /* Ash Brown */
-            
-            /* Chrome & Metal */
-            --chrome: #DBD5D3;     /* Steel Silver */
-            --chrome-dim: #C9C2C0; /* Cold Chrome */
-            --text-dim: #A8A4A2;   /* Gunmetal Gray */
-            
-            /* Accents */
+            --hull: #1E1413;       
+            --panel: #2A1E1D;      
+            --divider: #413935;    
+            --chrome: #DBD5D3;     
+            --chrome-dim: #C9C2C0; 
+            --text-dim: #A8A4A2;   
             --nebula-purple: #563960;
             --deep-purple: #2E142E;
-            --glow-purple: #855F8A; /* Soft Violet */
-            --flame-amber: #DAAF61; /* Sparks */
-            --rust-blaze: #BE5B45;  /* Heat/Danger */
+            --glow-purple: #855F8A;
+            --flame-amber: #DAAF61;
+            --rust-blaze: #BE5B45; 
             
             --font-display: 'Orbitron', sans-serif;
             --font-ui: 'Oxanium', monospace;
             --font-body: 'Rajdhani', sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            scrollbar-width: thin;
-            scrollbar-color: var(--rust-blaze) var(--hull);
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--rust-blaze) var(--hull); user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background-color: var(--void); color: var(--chrome); font-family: var(--font-body); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--void);
-            color: var(--chrome);
-            font-family: var(--font-body);
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        /* --- PROCEDURAL BACKGROUND --- */
+        .starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 120%, #2a1010 0%, var(--void) 70%); overflow: hidden; }
+        .star-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; animation: sparkle ease-in-out infinite; }
+        @keyframes sparkle { 0% { opacity: 0; transform: scale(0.5); } 50% { opacity: 0.8; transform: scale(1.2); } 100% { opacity: 0; transform: scale(0.5); } }
+        .grid-floor { position: absolute; bottom: -20%; left: -50%; width: 200%; height: 50%; background: linear-gradient(transparent 0%, var(--divider) 1px, transparent 2px), linear-gradient(90deg, transparent 0%, var(--divider) 1px, transparent 2px); background-size: 60px 60px; transform: perspective(300px) rotateX(70deg); opacity: 0.2; animation: gridMove 10s linear infinite; }
+        .grain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; z-index: -1; }
+        @keyframes gridMove { 0% { transform: perspective(300px) rotateX(70deg) translateY(0); } 100% { transform: perspective(300px) rotateX(70deg) translateY(60px); } }
 
-        /* --- PROCEDURAL BACKGROUND (SMOKE & ASPHALT) --- */
-        .starfield {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
-            background: radial-gradient(circle at 50% 120%, #2a1010 0%, var(--void) 70%);
-            overflow: hidden;
-        }
-
-        /* Generated Stars Container */
-        .star-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: sparkle ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 0.8; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(0.5); }
-        }
-
-        .grid-floor {
-            position: absolute;
-            bottom: -20%;
-            left: -50%;
-            width: 200%;
-            height: 50%;
-            background: 
-                linear-gradient(transparent 0%, var(--divider) 1px, transparent 2px),
-                linear-gradient(90deg, transparent 0%, var(--divider) 1px, transparent 2px);
-            background-size: 60px 60px;
-            transform: perspective(300px) rotateX(70deg);
-            opacity: 0.2;
-            animation: gridMove 10s linear infinite;
-        }
+        /* --- TOP BAR --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--hull); border-bottom: 2px solid var(--panel); width: 100%; z-index: 100; height: 60px; flex-shrink: 0; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .app-title { font-family: var(--font-ui); font-style: italic; font-weight: 800; font-size: 1.5rem; color: var(--chrome); text-shadow: 0 0 10px rgba(255,255,255,0.2); letter-spacing: 1px; }
         
-        .grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: -1;
-        }
+        .header-right { display: flex; align-items: center; gap: 15px; }
 
-        @keyframes gridMove {
-            0% { transform: perspective(300px) rotateX(70deg) translateY(0); }
-            100% { transform: perspective(300px) rotateX(70deg) translateY(60px); }
+        .auth-btn {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--flame-amber); color: var(--flame-amber);
+            font-family: var(--font-ui); font-size: 0.8rem; padding: 5px 12px; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 8px;
         }
+        .auth-btn:hover { background: var(--flame-amber); color: #000; box-shadow: 0 0 15px var(--flame-amber); }
+        .auth-btn.logged-in { border-color: var(--glow-purple); color: var(--glow-purple); }
+        .auth-btn.logged-in:hover { background: var(--glow-purple); color: #fff; box-shadow: 0 0 15px var(--glow-purple); }
 
-        /* --- TOP BAR (PERMANENT) --- */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: var(--hull);
-            border-bottom: 2px solid var(--panel);
-            width: 100%;
-            z-index: 100;
-            height: 60px;
-            flex-shrink: 0;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-
-        .app-title {
-            font-family: var(--font-ui); /* Oxanium */
-            font-style: italic;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--chrome);
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-            letter-spacing: 1px;
-        }
-
-        /* --- SEARCH BAR --- */
-        .search-container {
-            position: relative;
-            width: 40%;
-            max-width: 250px;
-        }
-
-        #searchInput {
-            width: 100%;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid var(--divider);
-            color: var(--chrome);
-            padding: 8px 12px;
-            font-family: var(--font-ui);
-            font-size: 0.85rem;
-            border-radius: 2px;
-            outline: none;
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-        
+        .search-container { position: relative; width: 200px; }
+        #searchInput { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--divider); color: var(--chrome); padding: 8px 12px; font-family: var(--font-ui); font-size: 0.85rem; border-radius: 2px; outline: none; transition: all 0.3s; text-transform: uppercase; }
         #searchInput::placeholder { color: var(--text-dim); opacity: 0.7; }
         #searchInput:focus { border-color: var(--flame-amber); background: rgba(0,0,0,0.9); box-shadow: 0 0 10px rgba(218, 175, 97, 0.2); }
-
-        .search-results {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            width: 300px;
-            background: var(--hull);
-            border: 1px solid var(--flame-amber);
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            z-index: 200;
-            margin-top: 5px;
-        }
-        
+        .search-results { position: absolute; top: 100%; right: 0; width: 300px; background: var(--hull); border: 1px solid var(--flame-amber); max-height: 300px; overflow-y: auto; display: none; box-shadow: 0 5px 20px rgba(0,0,0,0.9); z-index: 200; margin-top: 5px; }
         .search-results.active { display: block; }
-
-        .search-item {
-            padding: 10px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-        }
-        
+        .search-item { padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
         .search-item:hover { background: rgba(218, 175, 97, 0.1); color: var(--white); }
-        
-        .search-item-title {
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            color: #ccc;
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-            max-width: 90%;
-            text-transform: uppercase;
-        }
+        .search-item-title { font-family: var(--font-body); font-size: 0.9rem; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; text-transform: uppercase; }
 
-        /* --- LAYOUT STRUCTURE --- */
-        .module-deck {
-            flex-shrink: 0; /* Let it be sized by content */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 10px 20px 20px 20px; /* Reduced top padding */
-            border-bottom: 2px solid var(--panel);
-            background: rgba(1, 0, 1, 0.5);
-        }
+        /* --- LAYOUT --- */
+        .module-deck { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 10px 20px 20px 20px; border-bottom: 2px solid var(--panel); background: rgba(1, 0, 1, 0.5); }
+        .module-crate { flex-grow: 1; height: auto; background: var(--hull); display: flex; flex-direction: column; border-top: 2px solid var(--rust-blaze); overflow: hidden; }
 
-        .module-crate {
-            flex-grow: 1; /* Fills remaining space */
-            height: auto; /* Allow grow */
-            background: var(--hull);
-            display: flex;
-            flex-direction: column;
-            border-top: 2px solid var(--rust-blaze);
-            overflow: hidden; /* Contain scrolling list */
-        }
-
-        /* --- THE REACTOR --- */
-        .reactor-container {
-            width: 220px;
-            height: 220px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .reactor-ring {
-            position: absolute;
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            border: 2px dashed var(--divider);
-            animation: spin 60s linear infinite;
-        }
-
-        .reactor-mid {
-            position: absolute;
-            width: 80%; height: 80%;
-            border-radius: 50%;
-            border: 4px solid var(--panel);
-            border-top-color: var(--rust-blaze);
-            border-bottom-color: var(--glow-purple);
-            box-shadow: 0 0 20px rgba(190, 91, 69, 0.1);
-            animation: spin 4s linear infinite reverse;
-        }
-
-        .reactor-container.paused .reactor-ring,
-        .reactor-container.paused .reactor-mid { animation-play-state: paused; }
-
-        .reactor-core {
-            width: 60%; height: 60%;
-            background: radial-gradient(circle, var(--panel) 30%, #000 100%);
-            border-radius: 50%;
-            border: 1px solid var(--flame-amber);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 0 30px rgba(218, 175, 97, 0.2);
-            z-index: 2;
-        }
-
-        .core-text {
-            font-family: var(--font-display);
-            font-weight: 900;
-            font-size: 2.5rem;
-            color: #fff;
-            text-shadow: 0 0 10px var(--flame-amber);
-            letter-spacing: -2px;
-        }
-
-        .reactor-active .reactor-mid {
-            animation-duration: 2s;
-            box-shadow: 0 0 30px rgba(190, 91, 69, 0.4);
-            border-top-color: var(--flame-amber);
-        }
-        
+        /* --- REACTOR --- */
+        .reactor-container { width: 220px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; transition: all 0.3s ease; flex-shrink: 0; }
+        .reactor-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px dashed var(--divider); animation: spin 60s linear infinite; }
+        .reactor-mid { position: absolute; width: 80%; height: 80%; border-radius: 50%; border: 4px solid var(--panel); border-top-color: var(--rust-blaze); border-bottom-color: var(--glow-purple); box-shadow: 0 0 20px rgba(190, 91, 69, 0.1); animation: spin 4s linear infinite reverse; }
+        .reactor-container.paused .reactor-ring, .reactor-container.paused .reactor-mid { animation-play-state: paused; }
+        .reactor-core { width: 60%; height: 60%; background: radial-gradient(circle, var(--panel) 30%, #000 100%); border-radius: 50%; border: 1px solid var(--flame-amber); display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 30px rgba(218, 175, 97, 0.2); z-index: 2; }
+        .core-text { font-family: var(--font-display); font-weight: 900; font-size: 2.5rem; color: #fff; text-shadow: 0 0 10px var(--flame-amber); letter-spacing: -2px; }
+        .reactor-active .reactor-mid { animation-duration: 2s; box-shadow: 0 0 30px rgba(190, 91, 69, 0.4); border-top-color: var(--flame-amber); }
         .reactor-active .core-text { animation: pulseText 0.5s infinite alternate; }
-
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulseText { 
-            0% { text-shadow: 0 0 10px var(--flame-amber); opacity: 0.9; }
-            100% { text-shadow: 0 0 25px var(--rust-blaze); opacity: 1; }
-        }
+        @keyframes pulseText { 0% { text-shadow: 0 0 10px var(--flame-amber); opacity: 0.9; } 100% { text-shadow: 0 0 25px var(--rust-blaze); opacity: 1; } }
 
-        /* --- PLAYER CONTROLS --- */
-        /* Wrapper for Mobile Layout */
-        .player-top-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .track-display {
-            text-align: center;
-            margin-bottom: 15px;
-            width: 100%;
-            max-width: 500px;
-            z-index: 5;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .song-title {
-            font-family: var(--font-ui);
-            font-size: 1.4rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            color: var(--chrome);
-            text-shadow: 0 0 5px rgba(255,255,255,0.1);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            font-family: var(--font-display);
-            font-size: 0.7rem;
-            background: var(--panel);
-            border: 1px solid var(--divider);
-            color: var(--flame-amber);
-            margin-top: 5px;
-            letter-spacing: 1px;
-        }
-
-        .control-panel {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(30, 20, 19, 0.8);
-            padding: 15px 25px;
-            border-radius: 4px;
-            border: 1px solid var(--divider);
-            backdrop-filter: blur(5px);
-            flex-shrink: 0;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 100%;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-        }
-
-        .c-btn {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-        }
-
+        /* --- PLAYER UI --- */
+        .player-top-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .track-display { text-align: center; margin-bottom: 15px; width: 100%; max-width: 500px; z-index: 5; flex-shrink: 0; cursor: pointer; }
+        .song-title { font-family: var(--font-ui); font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; color: var(--chrome); text-shadow: 0 0 5px rgba(255,255,255,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .status-badge { display: inline-block; padding: 2px 8px; font-family: var(--font-display); font-size: 0.7rem; background: var(--panel); border: 1px solid var(--divider); color: var(--flame-amber); margin-top: 5px; letter-spacing: 1px; }
+        .control-panel { display: flex; align-items: center; gap: 12px; background: rgba(30, 20, 19, 0.8); padding: 15px 25px; border-radius: 4px; border: 1px solid var(--divider); backdrop-filter: blur(5px); flex-shrink: 0; flex-wrap: wrap; justify-content: center; max-width: 100%; box-shadow: 0 0 15px rgba(0,0,0,0.5); margin-bottom: 10px; }
+        .c-btn { background: none; border: none; color: var(--text-dim); font-size: 1.1rem; cursor: pointer; transition: all 0.2s; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .c-btn:hover { color: var(--flame-amber); text-shadow: 0 0 5px var(--flame-amber); }
         .c-btn.active { color: var(--rust-blaze); text-shadow: 0 0 10px var(--rust-blaze); }
-
-        .play-btn {
-            width: 60px; height: 60px;
-            font-size: 1.6rem;
-            border: 2px solid var(--chrome-dim);
-            color: var(--chrome);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-        
-        .play-btn:hover {
-            border-color: var(--flame-amber);
-            color: var(--flame-amber);
-            box-shadow: 0 0 15px var(--flame-amber);
-        }
-
+        .play-btn { width: 60px; height: 60px; font-size: 1.6rem; border: 2px solid var(--chrome-dim); color: var(--chrome); box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .play-btn:hover { border-color: var(--flame-amber); color: var(--flame-amber); box-shadow: 0 0 15px var(--flame-amber); }
         .like-main-btn.liked { color: var(--rust-blaze); animation: beat 0.3s; }
-        .action-btn { color: var(--chrome); }
-        .action-btn:hover { color: var(--flame-amber); text-shadow: 0 0 5px var(--flame-amber); }
-
         @keyframes beat { 50% { transform: scale(1.3); } }
-
-        /* Progress Bar (Full Width) */
-        .scrubber-contain {
-            width: 100%; 
-            margin-top: 10px;
-            flex-shrink: 0;
-            position: relative;
-            padding: 0 10px; /* Small safe padding */
-        }
         
-        .scrub-bar {
-            height: 8px;
-            background: #111;
-            border: 1px solid var(--divider);
-            border-radius: 4px;
-            cursor: pointer; 
-            position: relative;
-        }
-        
-        .scrub-fill {
-            height: 100%; 
-            background: linear-gradient(90deg, var(--rust-blaze), var(--flame-amber));
-            width: 0%;
-            box-shadow: 0 0 15px var(--rust-blaze);
-            position: relative;
-            border-radius: 2px;
-        }
-
-        .duration-label {
-            position: absolute;
-            top: -30px; 
-            text-align: center;
-            font-family: var(--font-ui);
-            font-size: 0.9rem;
-            color: var(--flame-amber);
-            text-shadow: 0 0 5px var(--rust-blaze);
-            opacity: 0;
-            transition: opacity 0.1s ease;
-            pointer-events: none;
-            z-index: 10;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            background: rgba(0,0,0,0.9);
-            padding: 2px 8px;
-            border-radius: 3px;
-            border: 1px solid var(--panel);
-        }
-
+        .scrubber-contain { width: 100%; margin-top: 10px; flex-shrink: 0; position: relative; padding: 0 10px; }
+        .scrub-bar { height: 8px; background: #111; border: 1px solid var(--divider); border-radius: 4px; cursor: pointer; position: relative; }
+        .scrub-fill { height: 100%; background: linear-gradient(90deg, var(--rust-blaze), var(--flame-amber)); width: 0%; box-shadow: 0 0 15px var(--rust-blaze); position: relative; border-radius: 2px; }
+        .duration-label { position: absolute; top: -30px; text-align: center; font-family: var(--font-ui); font-size: 0.9rem; color: var(--flame-amber); text-shadow: 0 0 5px var(--rust-blaze); opacity: 0; transition: opacity 0.1s ease; pointer-events: none; z-index: 10; transform: translateX(-50%); white-space: nowrap; background: rgba(0,0,0,0.9); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--panel); }
         .scrubber-contain:hover .duration-label { opacity: 1; }
-
-        .time-stamps {
-            display: flex; justify-content: space-between;
-            font-family: var(--font-ui); font-size: 0.8rem; color: var(--text-dim);
-            margin-top: 4px;
-            padding: 0 5px;
-        }
+        .time-stamps { display: flex; justify-content: space-between; font-family: var(--font-ui); font-size: 0.8rem; color: var(--text-dim); margin-top: 4px; padding: 0 5px; }
 
         /* --- CRATE --- */
-        .crate-header {
-            display: flex;
-            background: #000;
-            flex-shrink: 0;
-            border-bottom: 2px solid var(--panel);
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
+        .crate-header { display: flex; background: #000; flex-shrink: 0; border-bottom: 2px solid var(--panel); overflow-x: auto; scrollbar-width: none; }
         .crate-header::-webkit-scrollbar { display: none; }
-
-        .crate-tab {
-            flex-shrink: 0;
-            padding: 15px 25px;
-            background: #0a0a0e;
-            color: var(--text-dim);
-            border: none;
-            border-right: 1px solid var(--panel);
-            font-family: var(--font-ui);
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
+        .crate-tab { flex-shrink: 0; padding: 15px 25px; background: #0a0a0e; color: var(--text-dim); border: none; border-right: 1px solid var(--panel); font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 1.2rem; }
         .crate-tab:hover { background: #15151a; color: #fff; }
         .crate-tab.active { background: var(--hull); color: var(--flame-amber); box-shadow: inset 0 -3px 0 var(--flame-amber); }
-
-        .crate-tab-create {
-            background: var(--panel);
-            color: var(--chrome);
-            border-right: none;
-            border-left: 1px solid var(--panel);
-            position: sticky;
-            right: 0;
-            z-index: 2;
-        }
-
-        .playlist-controls {
-            background: var(--panel);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--divider);
-            flex-shrink: 0;
-        }
-
+        .crate-tab-create { background: var(--panel); color: var(--chrome); border-right: none; border-left: 1px solid var(--panel); position: sticky; right: 0; z-index: 2; }
+        
+        .playlist-controls { background: var(--panel); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--divider); flex-shrink: 0; }
         .pl-info { font-family: var(--font-ui); color: var(--flame-amber); font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
         .pl-actions-group { display: flex; gap: 10px; align-items: center; }
-
-        .pl-act-btn {
-            border: none;
-            padding: 8px 16px;
-            font-family: var(--font-ui);
-            font-size: 0.9rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex; align-items: center; gap: 6px;
-            text-transform: uppercase;
-            border-radius: 2px;
-        }
-
+        .pl-act-btn { border: none; padding: 8px 16px; font-family: var(--font-ui); font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; text-transform: uppercase; border-radius: 2px; }
         .pl-act-btn.play { background: var(--flame-amber); color: #000; box-shadow: 0 0 10px rgba(218, 175, 97, 0.4); }
         .pl-act-btn.play:hover { background: #fff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); }
         .pl-act-btn.shuffle { background: var(--rust-blaze); color: #fff; box-shadow: 0 0 10px rgba(190, 91, 69, 0.4); }
         .pl-act-btn.shuffle:hover { background: #ff4d4d; box-shadow: 0 0 15px rgba(255, 77, 77, 0.6); }
         .pl-act-btn.delete { background: var(--panel); color: var(--text-dim); border: 1px solid var(--divider); box-shadow: none; font-size: 0.8rem; padding: 6px 12px; }
-        .pl-act-btn.delete:hover { color: var(--rust-blaze); border-color: var(--rust-blaze); }
-
         .pl-edit-btn { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; }
         .pl-edit-btn:hover { color: var(--chrome); }
-        .pl-delete-btn:hover { color: var(--rust-blaze); }
 
-        .track-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .track-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            font-family: var(--font-body);
-            color: #888;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
+        .track-list { flex: 1; overflow-y: auto; padding: 0; -webkit-overflow-scrolling: touch; }
+        .track-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-family: var(--font-body); color: #888; cursor: pointer; transition: 0.2s; }
         .track-item:hover { background: rgba(218, 175, 97, 0.05); color: #fff; }
-        .track-item.playing {
-            background: linear-gradient(90deg, rgba(190, 91, 69, 0.2), transparent);
-            border-left: 4px solid var(--rust-blaze);
-            color: var(--flame-amber);
-        }
-
+        .track-item.playing { background: linear-gradient(90deg, rgba(190, 91, 69, 0.2), transparent); border-left: 4px solid var(--rust-blaze); color: var(--flame-amber); }
         .track-left { flex: 1; overflow: hidden; display: flex; align-items: center; gap: 10px; }
         .track-index { color: var(--text-dim); font-family: var(--font-ui); font-size: 0.8rem; min-width: 25px; }
         .track-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
         .track-right { display: flex; align-items: center; gap: 15px; }
         .play-count { font-family: var(--font-ui); font-size: 0.75rem; color: var(--text-dim); background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; }
         .track-actions { display: flex; gap: 10px; align-items: center; }
-
         .mini-btn { background: none; border: none; color: #555; font-size: 0.9rem; cursor: pointer; padding: 5px; transition: color 0.2s; }
         .mini-btn:hover { color: var(--chrome); }
         .mini-heart.liked { color: var(--rust-blaze); }
-        .mini-download:hover { color: var(--flame-amber); }
-        .mini-add:hover { color: var(--glow-purple); }
-        .mini-hide:hover { color: #888; }
-        .mini-remove:hover { color: var(--rust-blaze); }
-        .mini-edit:hover { color: var(--chrome); }
 
         /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.45);
-            z-index: 2000;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px);
-            opacity: 0; pointer-events: none; transition: 0.3s;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-
         .modal-content { background: var(--hull); border: 1px solid var(--rust-blaze); padding: 30px; text-align: center; box-shadow: 0 0 50px rgba(190, 91, 69, 0.2); position: relative; max-width: 400px; width: 90%; }
         .modal-title { font-family: var(--font-display); margin: 0 0 20px 0; color: #fff; letter-spacing: 2px; font-size: 1.5rem; }
         .modal-input { width: 100%; padding: 10px; background: #000; border: 1px solid var(--panel); color: #fff; font-family: var(--font-ui); margin-bottom: 20px; font-size: 1rem; }
         .modal-input:focus { outline: none; border-color: var(--flame-amber); }
-
         .icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
         .icon-option { background: var(--panel); border: 1px solid transparent; color: var(--text-dim); padding: 10px; cursor: pointer; transition: 0.2s; }
         .icon-option:hover { color: #fff; background: rgba(255,255,255,0.1); }
         .icon-option.selected { border-color: var(--flame-amber); color: var(--flame-amber); }
-
         .playlist-select-list { text-align: left; max-height: 200px; overflow-y: auto; margin-bottom: 20px; border: 1px solid var(--panel); }
         .playlist-option { padding: 10px; border-bottom: 1px solid var(--panel); cursor: pointer; display: flex; align-items: center; gap: 10px; }
         .playlist-option:hover { background: var(--panel); }
-
         .modal-btn { background: transparent; border: 1px solid var(--flame-amber); color: var(--flame-amber); padding: 10px 20px; font-family: var(--font-ui); font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin: 5px; }
         .modal-btn:hover { background: var(--flame-amber); color: #000; }
         .modal-btn.cancel { border-color: var(--text-dim); color: var(--text-dim); }
         .modal-btn.cancel:hover { background: var(--text-dim); color: #000; }
 
-        /* --- DEVICE OPTIMIZATION (MOBILE OVERHAUL) --- */
-        @media (min-width: 601px) and (max-width: 1024px) {
-            .reactor-container { width: 220px; height: 220px; }
-            .song-title { font-size: 1.4rem; }
-        }
-
-        /* MOBILE LAYOUT */
+        /* --- MOBILE --- */
         @media (max-width: 600px) {
             .top-bar { padding: 10px 15px; height: 50px; }
             .app-title { font-size: 1.2rem; }
-            .search-container { width: 140px; }
+            .header-right { gap: 10px; }
+            .search-container { width: 100px; }
+            .auth-btn { font-size: 0; padding: 8px; gap: 0; }
+            .auth-btn i { font-size: 1rem; }
             #searchInput { padding: 5px 8px; font-size: 0.8rem; }
-
-            /* Switch Deck to Horizontal Layout */
-            .player-top-wrapper {
-                flex-direction: row;
-                justify-content: space-evenly;
-                align-items: center;
-                width: 100%;
-                margin-bottom: 5px;
-            }
-
-            .module-deck { 
-                padding: 10px 5px 15px 5px; 
-                justify-content: flex-start;
-                min-height: auto;
-            }
-
-            .reactor-container { 
-                width: 130px; 
-                height: 130px; 
-                margin-bottom: 0; 
-                flex-shrink: 0;
-            }
+            .player-top-wrapper { flex-direction: row; justify-content: space-evenly; align-items: center; width: 100%; margin-bottom: 5px; }
+            .module-deck { padding: 10px 5px 15px 5px; justify-content: flex-start; min-height: auto; }
+            .reactor-container { width: 130px; height: 130px; margin-bottom: 0; flex-shrink: 0; }
             .core-text { font-size: 1.5rem; }
-
-            .track-display { 
-                margin-bottom: 0; 
-                text-align: left; 
-                width: auto;
-                max-width: 60%; 
-                padding-left: 10px;
-            }
-            
-            .song-title { 
-                font-size: 1.1rem; 
-                white-space: normal; 
-                line-height: 1.2;
-                max-height: 2.4em; 
-            }
-
-            .control-panel { 
-                width: 100%; 
-                padding: 10px 5px; 
-                gap: 5px; 
-                justify-content: space-between;
-                margin-bottom: 0;
-            }
+            .track-display { margin-bottom: 0; text-align: left; width: auto; max-width: 60%; padding-left: 10px; }
+            .song-title { font-size: 1.1rem; white-space: normal; line-height: 1.2; max-height: 2.4em; }
+            .control-panel { width: 100%; padding: 10px 5px; gap: 5px; justify-content: space-between; margin-bottom: 0; }
             .play-btn { width: 50px; height: 50px; font-size: 1.4rem; }
             .c-btn { width: 36px; height: 36px; }
-            
-            .scrubber-contain { 
-                margin-top: 15px; 
-                width: 100%; 
-                padding: 0 10px;
-            }
+            .scrubber-contain { margin-top: 15px; width: 100%; padding: 0 10px; }
             .scrub-bar { height: 12px; }
-            
-            /* No height limit on crate, flex grow handles it */
         }
-
         @media (max-height: 600px) and (orientation: landscape) {
             .reactor-container { width: 80px; height: 80px; margin-bottom: 5px; }
             .module-deck { padding: 5px; }
@@ -686,242 +192,165 @@
 </head>
 <body>
 
-    <!-- BACKGROUND -->
-    <div class="starfield">
-        <div class="grid-floor"></div>
-    </div>
+    <div class="starfield"><div class="grid-floor"></div></div>
     <div class="star-layer" id="starLayer"></div>
     <div class="grain"></div>
 
-    <!-- STARTUP MODAL -->
     <div class="modal-overlay active" id="startModal" style="z-index: 3000;">
         <div class="modal-content">
             <h1>AUDIO ENGINE // V999</h1>
             <br>
-            <button class="modal-btn" onclick="startSystem()">
-                <i class="fas fa-power-off"></i> IGNITE
-            </button>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="modal-btn" onclick="window.startSystem('new')"><i class="fas fa-random"></i> IGNITE (SHUFFLE)</button>
+                <button class="modal-btn" style="border-color:var(--text-dim); color:var(--text-dim);" onclick="window.startSystem('continue')"><i class="fas fa-play"></i> CONTINUE</button>
+            </div>
         </div>
     </div>
 
-    <!-- PERMANENT TOP BAR -->
     <header class="top-bar">
         <div class="app-title">999 JUKEBOX</div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="SEARCH..." autocomplete="off">
-            <div id="searchResults" class="search-results"></div>
+        <div class="header-right">
+            <button id="authBtn" class="auth-btn">
+                <i class="fas fa-link"></i> <span>LINK SYSTEM</span>
+            </button>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="SEARCH..." autocomplete="off">
+                <div id="searchResults" class="search-results"></div>
+            </div>
         </div>
     </header>
 
-    <!-- CREATE PLAYLIST MODAL -->
     <div class="modal-overlay" id="createPlaylistModal">
         <div class="modal-content">
             <div class="modal-title">NEW FREQUENCY</div>
             <input type="text" id="newPlaylistName" class="modal-input" placeholder="PLAYLIST NAME" maxlength="15">
-            <div class="icon-grid" id="iconGrid">
-                <!-- Icons injected JS -->
-            </div>
-            <button class="modal-btn" onclick="confirmCreatePlaylist()">CREATE</button>
-            <button class="modal-btn cancel" onclick="closeModals()">CANCEL</button>
+            <div class="icon-grid" id="iconGrid"></div>
+            <button class="modal-btn" onclick="window.confirmCreatePlaylist()">CREATE</button>
+            <button class="modal-btn cancel" onclick="window.closeModals()">CANCEL</button>
         </div>
     </div>
 
-    <!-- ADD TO PLAYLIST MODAL -->
     <div class="modal-overlay" id="addToPlaylistModal">
         <div class="modal-content">
             <div class="modal-title">SELECT FREQUENCY</div>
-            <div class="playlist-select-list" id="playlistSelectList">
-                <!-- Playlists injected JS -->
-            </div>
-            <button class="modal-btn cancel" onclick="closeModals()">CANCEL</button>
+            <div class="playlist-select-list" id="playlistSelectList"></div>
+            <button class="modal-btn cancel" onclick="window.closeModals()">CANCEL</button>
         </div>
     </div>
 
-    <!-- PLAYER DECK -->
     <section class="module-deck">
-        <!-- Player Top Section (Wraps Reactor + Info for Mobile Layout) -->
         <div class="player-top-wrapper">
-            <!-- Reactor Container -->
             <div class="reactor-container paused" id="reactor">
                 <div class="reactor-ring"></div>
                 <div class="reactor-mid"></div>
-                <div class="reactor-core">
-                    <div class="core-text">999</div>
-                </div>
+                <div class="reactor-core"><div class="core-text">999</div></div>
             </div>
-
-            <!-- Track Info -->
-            <div class="track-display" onclick="scrollToCurrentTrack()">
+            <div class="track-display" onclick="window.scrollToCurrentTrack()">
                 <div class="song-title" id="mainTitle">SYSTEM READY</div>
                 <div class="status-badge" id="statusBadge">IDLE</div>
             </div>
         </div>
-
-        <!-- Controls -->
         <div class="control-panel">
             <button class="c-btn" id="shuffleBtn" title="Shuffle Global"><i class="fas fa-random"></i></button>
             <button class="c-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
             <button class="c-btn play-btn" id="playBtn"><i class="fas fa-play"></i></button>
             <button class="c-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-            
-            <!-- Main Player Tools -->
-            <button class="c-btn action-btn" id="mainAddBtn" title="Add to Playlist" onclick="openAddToPlaylistModal(event)"><i class="fas fa-plus"></i></button>
-            <button class="c-btn action-btn" id="mainEditBtn" title="Rename Current" onclick="editCurrentSong(event)"><i class="fas fa-pencil-alt"></i></button>
-            <button class="c-btn action-btn" id="mainHideBtn" title="Hide Current" onclick="hideCurrentSong(event)"><i class="fas fa-eye-slash"></i></button>
+            <button class="c-btn action-btn" id="mainAddBtn" title="Add to Playlist" onclick="window.openAddToPlaylistModal(event)"><i class="fas fa-plus"></i></button>
+            <button class="c-btn action-btn" id="mainEditBtn" title="Rename Current" onclick="window.editCurrentSong(event)"><i class="fas fa-pencil-alt"></i></button>
+            <button class="c-btn action-btn" id="mainHideBtn" title="Hide Current" onclick="window.hideCurrentSong(event)"><i class="fas fa-eye-slash"></i></button>
             <button class="c-btn like-main-btn" id="mainLikeBtn" title="Save to Crate"><i class="far fa-heart"></i></button>
         </div>
-
-        <!-- Scrubber -->
         <div class="scrubber-contain" id="scrubberContain">
             <div class="duration-label" id="hoverDuration">0:00</div>
-            <div class="scrub-bar" id="progressArea">
-                <div class="scrub-fill" id="progressBar"></div>
-            </div>
-            <div class="time-stamps">
-                <span id="currTime">0:00</span>
-                <span id="totTime" style="opacity: 0.5;">0:00</span>
-            </div>
+            <div class="scrub-bar" id="progressArea"><div class="scrub-fill" id="progressBar"></div></div>
+            <div class="time-stamps"><span id="currTime">0:00</span><span id="totTime" style="opacity: 0.5;">0:00</span></div>
         </div>
     </section>
 
-    <!-- CRATE -->
     <section class="module-crate">
-        <div class="crate-header" id="crateHeader">
-            <!-- Injected via JS -->
-        </div>
-        
+        <div class="crate-header" id="crateHeader"></div>
         <div class="playlist-controls" id="playlistControls">
             <div class="pl-info-group">
                 <span class="pl-info" id="currentPlaylistName">DATABASE</span>
                 <span id="plEditControls"></span>
             </div>
             <div class="pl-actions-group">
-                <button class="pl-act-btn play" onclick="playCurrentView(false)"><i class="fas fa-play"></i> PLAY</button>
-                <button class="pl-act-btn shuffle" onclick="playCurrentView(true)"><i class="fas fa-random"></i> SHUFFLE</button>
-                <!-- Delete Button Injected via JS -->
+                <button class="pl-act-btn play" onclick="window.playCurrentView(false)"><i class="fas fa-play"></i> PLAY</button>
+                <button class="pl-act-btn shuffle" onclick="window.playCurrentView(true)"><i class="fas fa-random"></i> SHUFFLE</button>
             </div>
         </div>
-
-        <div class="track-list" id="playlistContainer">
-            <!-- Items injected via JS -->
-        </div>
+        <div class="track-list" id="playlistContainer"></div>
     </section>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ============================================
+        // FIREBASE KEYS (DeathRace Jukebox)
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXaaIWjXWQ2mrYeE8uHgWeoE1eNo6TJZY",
+            authDomain: "deathrace-jukebox.firebaseapp.com",
+            projectId: "deathrace-jukebox",
+            storageBucket: "deathrace-jukebox.firebasestorage.app",
+            messagingSenderId: "569085365898",
+            appId: "1:569085365898:web:9ce23b5a20970827c16773"
+        };
+        // ============================================
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
         /* --- CONFIG --- */
         const PATH_V1 = 'assets/audio/';
         const PATH_V2 = 'assets/audio/2/';
         const PATH_V3 = 'assets/audio/3/';
         const PATH_V4 = 'assets/audio/4/';
         
-        // VOLUME 1
+        // --- SONG LISTS ---
         const SONGS_V1 = [
-            "Boss Of Me.mp3",
-            "_38 Special (Go Go).mp3", "20_20 Vison.mp3", "25 Dark Place _ Denial.mp3", "27 Club.mp3", "Again (Watch Yo_ Step).mp3", 
-            "Alaska (whip).mp3", "Anacondas.mp3", "Anakin.mp3", "Attachments.mp3", "Back in Chicago w_ Young Thug.mp3", 
-            "Bad Boy.mp3", "Baguettes.mp3", "Birds Eye View.mp3", "Blue Cash.mp3", "Body Bag.mp3", "Both Ways.mp3", 
-            "Bye Bye Baby.mp3", "Cadaver _ Faster.mp3", "Cake.mp3", "Can't Be Saved.mp3", "Carry It.mp3", "Cavalier.mp3", 
-            "Codeine Casket.mp3", "Cold Summer.mp3", "Confessions.mp3", "Confused.mp3", "Cursed.mp3", "Damn Right.mp3", 
-            "Dark Outside.mp3", "Dark Tints _ Double R.mp3", "Deep In.mp3", "Demise.mp3", "Deprived 1.mp3", "Deprived.mp3", 
-            "DJ Khaled - Juice WRLD DID (Lyrics) Ft. Juice WRLD.mp3", "Dome.mp3", "Draco On Me.mp3", "Feel Like a God.mp3", 
-            "Feel Real.mp3", "FireFlies.mp3", "Fleur De Lis.mp3", "Flight To London - juice wrld.mp3", "Floor It.mp3", 
-            "Forget Me Not.mp3", "Fuego.mp3", "Game.mp3", "Got Nothing On Me.mp3", "Heavy Metal.mp3", "High Again.mp3", 
-            "Hot Ham.mp3", "Iron On Me.mp3", "Jeffrey.mp3", "Jet Lag.mp3", "Jetta.mp3", "Juice world So Fake (full Session)-(unreleased).mp3", 
-            "Juice Wrld - 911 (Lyrics).mp3", "Junkie.mp3", "K Like A Russian.mp3", "KiKi.mp3", "Kirby's Selecta.mp3", 
-            "Knuck If You Buck.mp3", "Kurtis Blow.mp3", "Lavish.mp3", "Let The Party Start _ Oxy In The Dark.mp3", 
-            "Lightyears.mp3", "Lock n' Load _ Gun Song.mp3", "Lock-On.mp3", "Lone Ranger.mp3", "Long Time Coming.mp3", 
-            "Lose a Dream.mp3", "Lost Too Many.mp3", "Lullabies.mp3", "Mannequin Challenge.mp3", "Mansion.mp3", 
-            "Maserati.mp3", "Matte Black.mp3", "Meadows.mp3", "Midnight Hours.mp3", "Minus.mp3", "Misery Avenue.mp3", 
-            "Murakami.mp3", "Neverland.mp3", "No Stopping Us.mp3", "Nuts Itch.mp3", "Off the Rip.mp3", "Oh Dear (NLMB).mp3", 
-            "OJ Glove.mp3", "Omen (Overseer).mp3", "Outer Space.mp3", "Pay Day.mp3", "Perky Potter (Get No Peace).mp3", 
-            "Racks In (Racks Off).mp3", "Rage.mp3", "Red Dead Redemption.mp3", "Red Moonlight.mp3", "Road Runners.mp3", 
-            "Rob a Bank.mp3", "Say Goodbye to My Mom.mp3", "Scarface.mp3", "Semi Addict.mp3", "Sexual Healing.mp3", 
-            "Shot 'Em Down.mp3", "Smoke _ Cell Phone.mp3", "So Hard.mp3", "So What.mp3", "Spanglish.mp3", 
-            "Spilt My Brains (808 Freestyle).mp3", "Stick Talk _ Lava Girl.mp3", "Stumblin.mp3", "Tag.mp3", "Take My Soul.mp3", 
-            "Take My Time.mp3", "Takeover.mp3", "Tales of the Toxic.mp3", "Talking To The Voices (Extended).mp3", 
-            "Talking to the Voices.mp3", "They All Talk.mp3", "Three _ Dolce Jeans.mp3", "Time (Juice Live).mp3", "Time.mp3", 
-            "To the Grave.mp3", "Trick or Treat.mp3", "Trifling.mp3", "Uncanny (50 $M's).mp3", "Under 25.mp3", "Until I Die.mp3", 
-            "USD.mp3", "Vegetarians.mp3", "Vlone Thugs.mp3", "Waiting For The Drugs To Hit Me.mp3", "Waves.mp3", 
-            "Way Too Many.mp3", "Western _ Best Of Em.mp3", "What's Brakkin (Ft. Offset).mp3", "Whatever I Like.mp3", 
-            "Woke Up Rich (Whistles OG).mp3", "Worth It.mp3", "X-mas List.mp3", "Yacht Club.mp3", "You Can't Tell Me.mp3", 
-            "Young God (extended).mp3", "Young God.mp3", "Zero Toleration.mp3", "Zombie.mp3", "Zoom.mp3"
+            "Boss Of Me.mp3", "Styrofoam.mp3", "Pour it Up - Extra.mp3", "Scarface Freestyle.mp3", "Meagan Good.mp3", "Ms. Jackson.mp3", "I Don't Believe (Best Believe).mp3", "Hollywood Dreams.mp3", "Good Days.mp3", "Futurama.mp3", "Extra Freestyle.mp3", "67.mp3",
+            "_38 Special (Go Go).mp3", "20_20 Vison.mp3", "25 Dark Place _ Denial.mp3", "27 Club.mp3", "Again (Watch Yo_ Step).mp3", "Alaska (whip).mp3", "Anacondas.mp3", "Anakin.mp3", "Attachments.mp3", "Back in Chicago w_ Young Thug.mp3", "Bad Boy.mp3", "Baguettes.mp3", "Birds Eye View.mp3", "Blue Cash.mp3", "Body Bag.mp3", "Both Ways.mp3", "Bye Bye Baby.mp3", "Cadaver _ Faster.mp3", "Cake.mp3", "Can't Be Saved.mp3", "Carry It.mp3", "Cavalier.mp3", "Codeine Casket.mp3", "Cold Summer.mp3", "Confessions.mp3", "Confused.mp3", "Cursed.mp3", "Damn Right.mp3", 
+            "Dark Outside.mp3", "Dark Tints _ Double R.mp3", "Deep In.mp3", "Demise.mp3", "Deprived 1.mp3", "Deprived.mp3", "DJ Khaled - Juice WRLD DID (Lyrics) Ft. Juice WRLD.mp3", "Dome.mp3", "Draco On Me.mp3", "Feel Like a God.mp3", "Feel Real.mp3", "FireFlies.mp3", "Fleur De Lis.mp3", "Flight To London - juice wrld.mp3", "Floor It.mp3", "Forget Me Not.mp3", "Fuego.mp3", "Game.mp3", "Got Nothing On Me.mp3", "Heavy Metal.mp3", "High Again.mp3", 
+            "Hot Ham.mp3", "Iron On Me.mp3", "Jeffrey.mp3", "Jet Lag.mp3", "Jetta.mp3", "Juice world So Fake (full Session)-(unreleased).mp3", "Juice Wrld - 911 (Lyrics).mp3", "Junkie.mp3", "K Like A Russian.mp3", "KiKi.mp3", "Kirby's Selecta.mp3", "Knuck If You Buck.mp3", "Kurtis Blow.mp3", "Lavish.mp3", "Let The Party Start _ Oxy In The Dark.mp3", 
+            "Lightyears.mp3", "Lock n' Load _ Gun Song.mp3", "Lock-On.mp3", "Lone Ranger.mp3", "Long Time Coming.mp3", "Lose a Dream.mp3", "Lost Too Many.mp3", "Lullabies.mp3", "Mannequin Challenge.mp3", "Mansion.mp3", "Maserati.mp3", "Matte Black.mp3", "Meadows.mp3", "Midnight Hours.mp3", "Minus.mp3", "Misery Avenue.mp3", 
+            "Murakami.mp3", "Neverland.mp3", "No Stopping Us.mp3", "Nuts Itch.mp3", "Off the Rip.mp3", "Oh Dear (NLMB).mp3", "OJ Glove.mp3", "Omen (Overseer).mp3", "Outer Space.mp3", "Pay Day.mp3", "Perky Potter (Get No Peace).mp3", "Racks In (Racks Off).mp3", "Rage.mp3", "Red Dead Redemption.mp3", "Red Moonlight.mp3", "Road Runners.mp3", 
+            "Rob a Bank.mp3", "Say Goodbye to My Mom.mp3", "Scarface.mp3", "Semi Addict.mp3", "Sexual Healing.mp3", "Shot 'Em Down.mp3", "Smoke _ Cell Phone.mp3", "So Hard.mp3", "So What.mp3", "Spanglish.mp3", "Spilt My Brains (808 Freestyle).mp3", "Stick Talk _ Lava Girl.mp3", "Stumblin.mp3", "Tag.mp3", "Take My Soul.mp3", 
+            "Take My Time.mp3", "Takeover.mp3", "Tales of the Toxic.mp3", "Talking To The Voices (Extended).mp3", "Talking to the Voices.mp3", "They All Talk.mp3", "Three _ Dolce Jeans.mp3", "Time (Juice Live).mp3", "Time.mp3", "To the Grave.mp3", "Trick or Treat.mp3", "Trifling.mp3", "Uncanny (50 $M's).mp3", "Under 25.mp3", "Until I Die.mp3", 
+            "USD.mp3", "Vegetarians.mp3", "Vlone Thugs.mp3", "Waiting For The Drugs To Hit Me.mp3", "Waves.mp3", "Way Too Many.mp3", "Western _ Best Of Em.mp3", "What's Brakkin (Ft. Offset).mp3", "Whatever I Like.mp3", "Woke Up Rich (Whistles OG).mp3", "Worth It.mp3", "X-mas List.mp3", "Yacht Club.mp3", "You Can't Tell Me.mp3", "Young God (extended).mp3", "Young God.mp3", "Zero Toleration.mp3", "Zombie.mp3", "Zoom.mp3"
         ];
-
-        // VOLUME 2
         const SONGS_V2 = [
-            "24⧸7.mp3", "All These Drugs.mp3", "anxiety.mp3", "Army Armory.mp3", "Attachments.mp3", "Autograph On My Line Juice.mp3", 
-            "bad hoes.mp3", "kirby's selecta.mp3", "Barry Bonds- TPNE.mp3", "Been Here Before.mp3", "Bloody Blade - Juice WRLD (Unreleased).mp3", 
-            "Bloody Blade.mp3", "Blurred Vision.mp3", "Bones - Juice WRLD (unreleased).mp3", "Bonnie & Clyde.mp3", "Boss.mp3", 
-            "Bottle (Session).mp3", "Bottle V2 (Both Sessions).mp3", "Bottle V2.mp3", "Challenger (Iron On Me) - juice wrld.mp3", 
-            "Chase The Dragon (Life's A Dungeon) - juice wrld.mp3", "cigarettes studio session.mp3", "Codeine Dream.mp3", "Come To Me.mp3", 
-            "Come Up.mp3", "Contained.mp3", "Crystal.mp3", "Cursed Heart.mp3", "bigger and better.mp3", "Dark Thoughts.mp3", "Dark Tints.mp3", 
-            "Darkness.mp3", "young god.mp3", "Dig Nose.mp3", "Disguise.mp3", "DJ Scheme & Juice WRLD - Buck 50 (Visualizer).mp3", 
-            "Do It (Another Thing To Do It).mp3", "Drown OG.mp3", "Earned It.mp3", "lavish.mp3", "Feel Like A God.mp3", "Ferrari Spider.mp3", 
-            "Fever.mp3", "feline.mp3", "Fiji.mp3", "FireFlies.mp3", "Fleur De Lis - Juice WRLD (Audio).mp3", "Flintstones Unheard.mp3", 
-            "Forever Is Whatever .mp3", "Forget Me Not.mp3", "Forget the Past.mp3", "Fuego.mp3", "Fun Time.mp3", "Handle It.mp3", "Happy Life.mp3", 
-            "Heading South.mp3", "Heavy Metal.mp3", "Hectic.mp3", "High Tide.mp3", "Higher.mp3", "House in the Hills.mp3", 
-            "Hypnotic Full Session - juice wrld.mp3", "I Want This Forever .mp3", "In My Bag.mp3", "It’s 4AM.mp3", 
-            "Juice WRLD   Boss Of Me  Lyrics.mp3", "Juice WRLD  -  High Again (Unreleased).mp3", "Juice WRLD -  Cowboy Hunt (Unreleased).mp3", 
-            "Juice WRLD -  Extra (CDQ Remaster) (Remaster W⧸ New Snippets) w⧸official beat.mp3", "juice wrld - ＂you don't know me＂ (unreleased the party never ends).mp3", 
-            "Juice WRLD - 24⧸7 (365) (New Leak⧸CDQ) (Prod. Danny Wolf, DILIP & Instupendo).mp3", "67 / martian.mp3", "Juice Wrld - 911 (Lyrics).mp3", 
-            "Juice WRLD - Afterlife (New Leak).mp3", "Juice WRLD - All Your Sins ⧸ Ace Of Spades (NEW LEAK).mp3", "Juice WRLD - Anacondas (NEW) Highest Quality.mp3", 
-            "Juice WRLD - Anakin (Unreleased) [Prod. Pompi].mp3", "Juice WRLD - Bitch You're Done (Completed).mp3", "Black Out in the Darkness.mp3", 
-            "Juice wrld - bout that action unreleased.mp3", "Juice WRLD - Cake Lyric Video (UNRELEASED).mp3", "Juice WRLD - Call Me Whenever (Unreleased).mp3", 
-            "Juice wrld - Can't be saved (Lyrics).mp3", "candles (extended).mp3", "Juice WRLD - ​Cerebral (Unreleased).mp3", "chase my thrills.mp3", 
-            "chef juice (ft. ILOVEMAKONEN.mp3", "JUICE WRLD - CHEMICAL IMBALANCE.mp3", "Juice WRLD - Codeine Guzzler (unreleased).mp3", 
-            "Juice Wrld - Cold Summer (No Breaks) Lyrics Video.mp3", "Juice WRLD - Condone It (Studio Session) (Unreleased).mp3", 
-            "Juice WRLD - Coraline [Remix] (Music Video).mp3", "Juice WRLD - Couple Pills (Music Video).mp3", "Juice WRLD - DeLorean [Unreleased⧸Leaked].mp3", 
-            "different dimension / far away.mp3", "dome.mp3", "emotional overdose.mp3", "Juice WRLD - Ex Girlfriend (Unreleased) [Prod. Max Chris].mp3", 
-            "Juice WRLD - Fenty (Unreleased, Full Song).mp3", "Juice WRLD - Fire In My Lungs (Unreleased).mp3", "Juice WRLD - First Time (Studio Sessions).mp3", 
-            "Juice WRLD - Flavor (Studio Session⧸Extended) (Lcky Mix).mp3", "forever.mp3", "Juice WRLD - ​From The Bottom (Unreleased).mp3", 
-            "Juice WRLD - Go Away (Leak).mp3", "Juice WRLD - Grace [Unreleased].mp3", "hate her friends.mp3", "Juice WRLD - Hell On Earth (Unreleased) [Prod. Max Chris].mp3", 
-            "high with my friends / high again.mp3", "irony / twitter.mp3", "Juice WRLD - Junkie (Unreleased) [Prod. Mortus].mp3", 
-            "Juice Wrld - Lost In The Dark place Video Lyrics  (unreleased).mp3", "Juice WRLD - Matte Black (Unreleased).mp3", 
-            "Juice WRLD - Mayweather (Unreleased) [Prod. Max Chris].mp3", "Juice WRLD - Miss Her (Unreleased) [Prod. Max Chris].mp3", 
-            "Juice WRLD - Missed Calls (Unreleased) [Prod. Max Chris].mp3", "Juice WRLD - Molly and Mike (Unreleased).mp3", 
-            "Juice WRLD - Money Over Hoes (unreleased).mp3", "Juice WRLD - Nintendo.mp3", "nothing good.mp3", "Juice WRLD - Not An Option (Stargazing) [Unreleased].mp3", 
-            "Juice WRLD - Not Ashamed (Unreleased).mp3", "Juice WRLD - Omen (Overseer) OG Quality⧸Best Quality.mp3", "Juice WRLD - Orange (CDQ) (UNRELEASED) (EXTENDED).mp3", 
-            "Juice WRLD - Pesos (Remix) (Music Video).mp3", "Juice WRLD - Pieces (Unreleased).mp3", "Juice WRLD - Racks (CDQ Remaster).mp3", 
-            "Juice Wrld - Red Moonlight [Unreleased].mp3", "Juice WRLD - Rob a Bank OG.mp3", "Juice WRLD - Rush (UNHEARD) (unreleased).mp3", 
-            "Juice WRLD - Shit Talk (So Hard) (unreleased).mp3", "Juice WRLD - SIP (Always Workin) (EXTENDED) (CDQ) (UNRELEASED) (NEW).mp3", 
-            "Juice WRLD - Smoke a Half (unreleased).mp3", "Juice WRLD - So Low (Unreleased).mp3", "starstruck.mp3", "Juice WRLD - Styrofoam  (NEW LEAK) (UNRELEASED).mp3", 
-            "Juice WRLD - Superpower (Unreleased)Prod [Max Chris].mp3", "Juice WRLD - Tag (EXTENDED) (NEW LEAK) (CDQ) (UNRELEASED).mp3", 
-            "tales of the toxic.mp3", "Juice WRLD - Talking to voices (Lyrics).mp3", "till my suicide.mp3", "Trifling (feat. Lil Yachty).mp3", 
-            "Juice WRLD - Under 25(Unreleased).mp3", "Juice WRLD - Who Shot Cupid [OG Version⧸Unreleased].mp3", "Juice Wrld - Young God (Never Cared) Full Version (Unreleased).mp3", 
-            "Juice WRLD – “Sic ’Em” (Unreleased ⧸ Full Version) OFFICIAL LYRIC VIDEO.mp3", "Juice WRLD ＂Eye Contact (Look Me In My Eyes)＂ (Official Audio).mp3", 
-            "my fault.mp3", "Juice WRLD “Sometimes” (Studio Session) (Lyrics).mp3", "Juice WRLD & Cordae - Doomsday (Official Music Video).mp3", 
-            "Juice WRLD & Roddy Ricch - Soda Pop (Unreleased).mp3", "Juice WRLD & Young Thug - Bye Bye Baby.mp3", "Juice WRLD Lose A Dream Full Studio Session.mp3", 
-            "Juice Wrld Quitter FULL AUDIO (unreleased).mp3", "used to extended.mp3", "Juice Wrld X Young Thug - Baguettes (Leaked Today).mp3", 
-            "Juice WRLD- Bad news (Unreleased) Official Audio.mp3", "Juice Wrld-JetLag Unreleased.mp3", "Juice WRLD-Wake Up-(unreleased).mp3", 
-            "Juice WRLD, Marshmello - We Don't Get Along.mp3", "Juice WRLD： GoPro.mp3", "rain dance.mp3", "JuiceWRLD： Time.mp3", "Karate Kid.mp3", 
-            "Kick Back.mp3", "Kinda Lonely.mp3", "Late Night Drives.mp3", "Legends Never Die - Chrissy Costanza spin the bottle tour DC.mp3", 
-            "Lighter.mp3", "Loser.mp3", "Lost In Your Feels .mp3", "Lost Love.mp3", "Lost.mp3", "Mind Games.mp3", 
-            "Mistake.mp3", "Monster.mp3", "Monsters in My Basement.mp3", "Morning.mp3", "Murakami.mp3", "Naruto vs Sauske- Demon Love.mp3", 
-            "No Friends.mp3", "No Jumper.mp3", "not perfect.mp3", "Novocaine.mp3", "Oh Dear (NLMB).mp3", "OLD ME ﹤⧸3.mp3", "On My Mind Juice Wlrd Unreleased.mp3", 
-            "On My Mind.mp3", "Passed Out .mp3", "Pay Day.mp3", "Problem Solvers.mp3", "Purple Ocean.mp3", "Purple Substance.mp3", 
-            "Racks In (Racks Off) - juice wrld.mp3", "Rare Leaked Live Stream - Blood On My Jeans - Juice WRLD + Freestyle.mp3", "Real Right.mp3", 
-            "red moonlight.mp3", "Relapse Again.mp3", "Remind Me Of The Summer Full With Stems For YT Music.mp3", "Ribbit.mp3", "ROCKSTAR GIRL.mp3", 
-            "Runners.mp3", "Saved By The Bell.mp3", "Scarface.mp3", 
-            "Sleep Paralysis - Juice WRLD (Studio Session).mp3", "Spanglish.mp3", "Spilt My Brains (808 Freestyle) - juice wrld.mp3", "Spinning.mp3", 
-            "Stay Sober .mp3", "Stolen.mp3", "Styrofoam (Super Saiyan).mp3", "Suffering.mp3", "Tag - Juice WRLD (CDQ Audio).mp3", "Tag Along.mp3", 
-            "Take Me Back.mp3", "Take My Soul.mp3", "Tattoos and Ink.mp3", "Tears (OKAY v2) -juice wrld.mp3", "Temporary.mp3", "Terrified.mp3", 
-            "The Moment.mp3", "THE PARTY NEVER ENDS - WE WAITED FOR.mp3", "Together.mp3", 
-            "Too High.mp3", "TRUTH.mp3", "Unbelievable.mp3", "USD.mp3", "Vegetarians.mp3", "Vlone Thugs.mp3", "Void.mp3", "walk in the dark.mp3", 
-            "Walk In The Room.mp3", "Way Too Many.mp3", "We Don't Get Along.mp3", "Will I Survive.mp3", "Wonder Why.mp3", "Worst Luck.mp3", 
-            "You Say You Love Me .mp3", "Zombie.mp3", "Zoom.mp3"
+            "24⧸7.mp3", "All These Drugs.mp3", "anxiety.mp3", "Army Armory.mp3", "Attachments.mp3", "Autograph On My Line Juice.mp3", "bad hoes.mp3", "kirby's selecta.mp3", "Barry Bonds- TPNE.mp3", "Been Here Before.mp3", "Bloody Blade - Juice WRLD (Unreleased).mp3", "Bloody Blade.mp3", "Blurred Vision.mp3", "Bones - Juice WRLD (unreleased).mp3", "Bonnie & Clyde.mp3", "Boss.mp3", 
+            "Bottle (Session).mp3", "Bottle V2 (Both Sessions).mp3", "Bottle V2.mp3", "Challenger (Iron On Me) - juice wrld.mp3", "Chase The Dragon (Life's A Dungeon) - juice wrld.mp3", "cigarettes studio session.mp3", "Codeine Dream.mp3", "Come To Me.mp3", "Come Up.mp3", "Contained.mp3", "Crystal.mp3", "Cursed Heart.mp3", "bigger and better.mp3", "Dark Thoughts.mp3", "Dark Tints.mp3", "Darkness.mp3", "young god.mp3", "Dig Nose.mp3", "Disguise.mp3", "DJ Scheme & Juice WRLD - Buck 50 (Visualizer).mp3", 
+            "Do It (Another Thing To Do It).mp3", "Drown OG.mp3", "Earned It.mp3", "lavish.mp3", "Feel Like A God.mp3", "Ferrari Spider.mp3", "Fever.mp3", "feline.mp3", "Fiji.mp3", "FireFlies.mp3", "Fleur De Lis - Juice WRLD (Audio).mp3", "Flintstones Unheard.mp3", "Forever Is Whatever .mp3", "Forget Me Not.mp3", "Forget the Past.mp3", "Fuego.mp3", "Fun Time.mp3", "Handle It.mp3", "Happy Life.mp3", 
+            "Heading South.mp3", "Heavy Metal.mp3", "Hectic.mp3", "High Tide.mp3", "Higher.mp3", "House in the Hills.mp3", "Hypnotic Full Session - juice wrld.mp3", "I Want This Forever .mp3", "In My Bag.mp3", "It’s 4AM.mp3", "Juice WRLD   Boss Of Me  Lyrics.mp3", "Juice WRLD  -  High Again (Unreleased).mp3", "Juice WRLD -  Cowboy Hunt (Unreleased).mp3", "juice wrld - ＂you don't know me＂ (unreleased the party never ends).mp3", 
+            "Juice WRLD - 24⧸7 (365) (New Leak⧸CDQ) (Prod. Danny Wolf, DILIP & Instupendo).mp3", "Juice Wrld - 911 (Lyrics).mp3", "Juice WRLD - Afterlife (New Leak).mp3", "Juice WRLD - All Your Sins ⧸ Ace Of Spades (NEW LEAK).mp3", "Juice WRLD - Anacondas (NEW) Highest Quality.mp3", "Juice WRLD - Anakin (Unreleased) [Prod. Pompi].mp3", "Juice WRLD - Bitch You're Done (Completed).mp3", "Black Out in the Darkness.mp3", 
+            "Juice wrld - bout that action unreleased.mp3", "Juice WRLD - Cake Lyric Video (UNRELEASED).mp3", "Juice WRLD - Call Me Whenever (Unreleased).mp3", "Juice wrld - Can't be saved (Lyrics).mp3", "candles (extended).mp3", "Juice WRLD - ​Cerebral (Unreleased).mp3", "chase my thrills.mp3", "chef juice (ft. ILOVEMAKONEN.mp3", "JUICE WRLD - CHEMICAL IMBALANCE.mp3", "Juice WRLD - Codeine Guzzler (unreleased).mp3", 
+            "Juice Wrld - Cold Summer (No Breaks) Lyrics Video.mp3", "Juice WRLD - Condone It (Studio Session) (Unreleased).mp3", "Juice WRLD - Coraline [Remix] (Music Video).mp3", "Juice WRLD - Couple Pills (Music Video).mp3", "Juice WRLD - DeLorean [Unreleased⧸Leaked].mp3", "different dimension / far away.mp3", "dome.mp3", "emotional overdose.mp3", "Juice WRLD - Ex Girlfriend (Unreleased) [Prod. Max Chris].mp3", 
+            "Juice WRLD - Fenty (Unreleased, Full Song).mp3", "Juice WRLD - Fire In My Lungs (Unreleased).mp3", "Juice WRLD - First Time (Studio Sessions).mp3", "Juice WRLD - Flavor (Studio Session⧸Extended) (Lcky Mix).mp3", "forever.mp3", "Juice WRLD - ​From The Bottom (Unreleased).mp3", "Juice WRLD - Go Away (Leak).mp3", "Juice WRLD - Grace [Unreleased].mp3", "hate her friends.mp3", "Juice WRLD - Hell On Earth (Unreleased) [Prod. Max Chris].mp3", 
+            "high with my friends / high again.mp3", "irony / twitter.mp3", "Juice WRLD - Junkie (Unreleased) [Prod. Mortus].mp3", "Juice Wrld - Lost In The Dark place Video Lyrics  (unreleased).mp3", "Juice WRLD - Matte Black (Unreleased).mp3", "Juice WRLD - Mayweather (Unreleased) [Prod. Max Chris].mp3", "Juice WRLD - Miss Her (Unreleased) [Prod. Max Chris].mp3", 
+            "Juice WRLD - Missed Calls (Unreleased) [Prod. Max Chris].mp3", "Juice WRLD - Molly and Mike (Unreleased).mp3", "Juice WRLD - Money Over Hoes (unreleased).mp3", "Juice WRLD - Nintendo.mp3", "nothing good.mp3", "Juice WRLD - Not An Option (Stargazing) [Unreleased].mp3", "Juice WRLD - Not Ashamed (Unreleased).mp3", "Juice WRLD - Omen (Overseer) OG Quality⧸Best Quality.mp3", "Juice WRLD - Orange (CDQ) (UNRELEASED) (EXTENDED).mp3", 
+            "Juice WRLD - Pesos (Remix) (Music Video).mp3", "Juice WRLD - Pieces (Unreleased).mp3", "Juice WRLD - Racks (CDQ Remaster).mp3", "Juice Wrld - Red Moonlight [Unreleased].mp3", "Juice WRLD - Rob a Bank OG.mp3", "Juice WRLD - Rush (UNHEARD) (unreleased).mp3", "Juice WRLD - Shit Talk (So Hard) (unreleased).mp3", "Juice WRLD - SIP (Always Workin) (EXTENDED) (CDQ) (UNRELEASED) (NEW).mp3", 
+            "Juice WRLD - Smoke a Half (unreleased).mp3", "Juice WRLD - So Low (Unreleased).mp3", "starstruck.mp3", "Juice WRLD - Superpower (Unreleased)Prod [Max Chris].mp3", "Juice WRLD - Tag (EXTENDED) (NEW LEAK) (CDQ) (UNRELEASED).mp3", "tales of the toxic.mp3", "Juice WRLD - Talking to voices (Lyrics).mp3", "till my suicide.mp3", "Trifling (feat. Lil Yachty).mp3", 
+            "Juice WRLD - Under 25(Unreleased).mp3", "Juice WRLD - Who Shot Cupid [OG Version⧸Unreleased].mp3", "Juice Wrld - Young God (Never Cared) Full Version (Unreleased).mp3", "Juice WRLD – “Sic ’Em” (Unreleased ⧸ Full Version) OFFICIAL LYRIC VIDEO.mp3", "Juice WRLD ＂Eye Contact (Look Me In My Eyes)＂ (Official Audio).mp3", "my fault.mp3", "Juice WRLD “Sometimes” (Studio Session) (Lyrics).mp3", "Juice WRLD & Cordae - Doomsday (Official Music Video).mp3", 
+            "Juice WRLD & Roddy Ricch - Soda Pop (Unreleased).mp3", "Juice WRLD & Young Thug - Bye Bye Baby.mp3", "Juice WRLD Lose A Dream Full Studio Session.mp3", "Juice Wrld Quitter FULL AUDIO (unreleased).mp3", "used to extended.mp3", "Juice Wrld X Young Thug - Baguettes (Leaked Today).mp3", "Juice WRLD- Bad news (Unreleased) Official Audio.mp3", "Juice Wrld-JetLag Unreleased.mp3", "Juice WRLD-Wake Up-(unreleased).mp3", 
+            "Juice WRLD, Marshmello - We Don't Get Along.mp3", "Juice WRLD： GoPro.mp3", "rain dance.mp3", "JuiceWRLD： Time.mp3", "Karate Kid.mp3", "Kick Back.mp3", "Kinda Lonely.mp3", "Late Night Drives.mp3", "Lighter.mp3", "Loser.mp3", "Lost In Your Feels .mp3", "Lost Love.mp3", "Lost.mp3", "Mind Games.mp3", "Mistake.mp3", "Monster.mp3", "Monsters in My Basement.mp3", "Morning.mp3", "Murakami.mp3", "Naruto vs Sauske- Demon Love.mp3", 
+            "No Friends.mp3", "No Jumper.mp3", "not perfect.mp3", "Novocaine.mp3", "Oh Dear (NLMB).mp3", "OLD ME ﹤⧸3.mp3", "On My Mind Juice Wlrd Unreleased.mp3", "On My Mind.mp3", "Passed Out .mp3", "Pay Day.mp3", "Problem Solvers.mp3", "Purple Ocean.mp3", "Purple Substance.mp3", "Racks In (Racks Off) - juice wrld.mp3", "Rare Leaked Live Stream - Blood On My Jeans - Juice WRLD + Freestyle.mp3", "Real Right.mp3", "red moonlight.mp3", "Relapse Again.mp3", "Remind Me Of The Summer Full With Stems For YT Music.mp3", "Ribbit.mp3", "ROCKSTAR GIRL.mp3", 
+            "Runners.mp3", "Saved By The Bell.mp3", "Scarface.mp3", "Sleep Paralysis - Juice WRLD (Studio Session).mp3", "Spanglish.mp3", "Spilt My Brains (808 Freestyle) - juice wrld.mp3", "Spinning.mp3", "Stay Sober .mp3", "Stolen.mp3", "Styrofoam (Super Saiyan).mp3", "Suffering.mp3", "Tag - Juice WRLD (CDQ Audio).mp3", "Tag Along.mp3", "Take Me Back.mp3", "Take My Soul.mp3", "Tattoos and Ink.mp3", "Tears (OKAY v2) -juice wrld.mp3", "Temporary.mp3", "Terrified.mp3", 
+            "The Moment.mp3", "THE PARTY NEVER ENDS - WE WAITED FOR.mp3", "Together.mp3", "Too High.mp3", "TRUTH.mp3", "Unbelievable.mp3", "USD.mp3", "Vegetarians.mp3", "Vlone Thugs.mp3", "Void.mp3", "walk in the dark.mp3", "Walk In The Room.mp3", "Way Too Many.mp3", "We Don't Get Along.mp3", "Will I Survive.mp3", "Wonder Why.mp3", "Worst Luck.mp3", "You Say You Love Me .mp3", "Zombie.mp3", "Zoom.mp3"
         ];
-
-        // VOLUME 3
         const SONGS_V3 = [
             "Codiene Cobbain.mp3", "Feed Her Fix.mp3", "From The Bottom.mp3", "If I.mp3", "Lucid Dream ⧸ Lose A Dream (Sessions) .mp3",
             "Mr Miyagi.mp3", "Reach (extended).mp3", "Revive.mp3", "Rims.mp3", "Start It Up (Full Freestyle) .mp3", "Toxic Humans.mp3", "Y o u (U).mp3"
         ];
-
-        // VOLUME 4
         const SONGS_V4 = [
             "4 instance.mp3", "4 Words (F.Y.P.mp3", "6 Kiss -Session Edit v2-.mp3", "6 Kiss -Sessions Edit-.mp3", "24 Hours (Secure The Bag).mp3",
             "27 Club (Help Me).mp3", "27 Club (Show Me Love).mp3", "70_s -Perfect Loop-.mp3", "100 Band Jugg (ft. ilovemakonnen) -Looped-.mp3",
-            "500 Carats -Session Edit v2-.mp3", "500 Carats -Session Edit-.mp3", "734 (Think Too Much)  -Session Edit-.mp3", "734 (Think Too Much) -Session Edit v2-.mp3",
+            "500 Carats -Session Edit v2-.mp3", "500 Carats -Session Edit-.mp3", "734 (Think Too Much)  -Session Edit-.mp3", "734 (Think Too Much) -Session Edit v2-.mp3",
             "999 (Triple 9) -Session Edit-.mp3", "Broke Boys.mp3", "Coraline.mp3", "Hi Tech Talk.mp3", "Jumpman.mp3", "Late Night.mp3", "Moncler Year.mp3",
             "On My Case.mp3", "Open Shop V2 (High All Week V2) (Unreleased).mp3"
         ];
@@ -937,13 +366,13 @@
         let currentPlaylist = [];
         let currentIndex = 0;
         let isShuffle = true;
-        let currentTab = 'all'; // all, saved, hidden, or playlist-ID
+        let currentTab = 'all';
         let currentAddToSong = null;
         let currentlyPlayingSong = null;
+        let currentUser = null;
 
         const audio = new Audio();
         
-        // ICONS for Playlists
         const PLAYLIST_ICONS = [
             'fa-fire', 'fa-bolt', 'fa-star', 'fa-skull', 'fa-ghost', 
             'fa-car', 'fa-motorcycle', 'fa-plane', 'fa-rocket', 'fa-music', 
@@ -964,18 +393,77 @@
         const reactor = document.getElementById('reactor');
         const shuffleBtn = document.getElementById('shuffleBtn');
         const mainLikeBtn = document.getElementById('mainLikeBtn');
-        const mainAddBtn = document.getElementById('mainAddBtn');
         const crateHeader = document.getElementById('crateHeader');
         const currentPlaylistName = document.getElementById('currentPlaylistName');
         const starLayer = document.getElementById('starLayer');
         const plEditControls = document.getElementById('plEditControls');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
+        const authBtn = document.getElementById('authBtn');
+
+        /* --- CLOUD SYNC --- */
+        let saveTimeout;
+        const saveToCloud = () => {
+            if(!currentUser) return;
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                try {
+                    await setDoc(doc(db, "users", currentUser.uid), {
+                        likedSongs, hiddenSongs, playCounts, playlists, customTitles, lastUpdated: new Date().toISOString()
+                    });
+                } catch(e) { console.error("Sync Error", e); }
+            }, 2000); // Debounce save
+        };
+
+        const loadFromCloud = async (user) => {
+            try {
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if(snap.exists()) {
+                    const d = snap.data();
+                    if(d.likedSongs) likedSongs = d.likedSongs;
+                    if(d.hiddenSongs) hiddenSongs = d.hiddenSongs;
+                    if(d.playCounts) playCounts = d.playCounts;
+                    if(d.playlists) playlists = d.playlists;
+                    if(d.customTitles) customTitles = d.customTitles;
+                    saveLocal(); // Sync Cloud -> Local
+                    init(); // Re-render
+                } else {
+                    saveToCloud(); // Initial save
+                }
+            } catch(e) { console.error("Load Error", e); }
+        };
+
+        const saveLocal = () => {
+            localStorage.setItem('jw999_likes_v2', JSON.stringify(likedSongs));
+            localStorage.setItem('jw999_hidden', JSON.stringify(hiddenSongs));
+            localStorage.setItem('jw999_playcounts', JSON.stringify(playCounts));
+            localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
+            localStorage.setItem('jw999_custom_titles', JSON.stringify(customTitles));
+        };
+
+        /* --- AUTH LOGIC --- */
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if(user) {
+                authBtn.classList.add('logged-in');
+                authBtn.innerHTML = `<i class="fas fa-link"></i> ${user.displayName.split(' ')[0].toUpperCase()}`;
+                loadFromCloud(user);
+            } else {
+                authBtn.classList.remove('logged-in');
+                authBtn.innerHTML = `<i class="fas fa-link"></i> LINK SYSTEM`;
+            }
+        });
+
+        authBtn.addEventListener('click', () => {
+            if(currentUser) {
+                if(confirm("DISCONNECT NEURAL LINK?")) signOut(auth).then(() => window.location.reload());
+            } else {
+                signInWithPopup(auth, provider).catch(e => alert("LINK FAILED"));
+            }
+        });
 
         /* --- INIT --- */
         function init() {
-            createStars();
-
             // Combine Folders
             const list1 = SONGS_V1.map(f => ({ file: PATH_V1 + f, raw: f }));
             const list2 = SONGS_V2.map(f => ({ file: PATH_V2 + f, raw: f }));
@@ -983,599 +471,175 @@
             const list4 = SONGS_V4.map(f => ({ file: PATH_V4 + f, raw: f }));
             const rawList = [...list1, ...list2, ...list3, ...list4];
 
-            // Filter Duplicates
             const seenTitles = new Set();
             const uniqueList = [];
 
             rawList.forEach(item => {
                 const title = item.raw.replace('.mp3','').replace(/_/g, ' ').trim();
                 const normalizedTitle = title.toLowerCase();
-                
                 if (!seenTitles.has(normalizedTitle)) {
                     seenTitles.add(normalizedTitle);
                     uniqueList.push({ ...item, cleanTitle: title });
                 }
             });
 
-            // Sort Alphabetically
             uniqueList.sort((a, b) => a.cleanTitle.localeCompare(b.cleanTitle));
 
             songs = uniqueList.map((item, i) => ({
                 id: i, 
                 originalTitle: item.cleanTitle,
-                // Check if user renamed it
                 title: customTitles[item.cleanTitle] || item.cleanTitle,
                 file: item.file
             }));
 
             renderPlaylistTabs();
-            currentPlaylist = [...songs];
-            renderPlaylist();
+            // Preserve current view if playing
+            if(currentTab === 'all') currentPlaylist = [...songs];
+            else updatePlaylistView(); // Refresh specific tab
             
+            renderPlaylist();
             if(isShuffle) shuffleBtn.classList.add('active');
             
-            // Populate Icon Grid
+            // Icon Grid
             const iconGrid = document.getElementById('iconGrid');
+            iconGrid.innerHTML = '';
             PLAYLIST_ICONS.forEach(icon => {
                 const div = document.createElement('div');
                 div.className = 'icon-option';
                 if(icon === selectedIcon) div.classList.add('selected');
                 div.innerHTML = `<i class="fas ${icon}"></i>`;
-                div.onclick = () => selectIcon(div, icon);
+                div.onclick = () => window.selectIcon(div, icon);
                 iconGrid.appendChild(div);
             });
         }
 
-        function createStars() {
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                const size = Math.random() * 3;
-                const duration = 2 + Math.random() * 4;
-                const delay = Math.random() * 5;
-                star.style.left = `${x}%`;
-                star.style.top = `${y}%`;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.animationDuration = `${duration}s`;
-                star.style.animationDelay = `${delay}s`;
-                starLayer.appendChild(star);
-            }
-        }
-
-        function startSystem() {
+        // --- GLOBAL FUNCTIONS (Attached to Window for HTML Onclick) ---
+        window.startSystem = (mode) => {
             startModal.classList.remove('active');
+            createStars();
+            if (mode === 'continue') {
+                const saved = JSON.parse(localStorage.getItem('jw999_session'));
+                if (saved) {
+                    isShuffle = saved.isShuffle;
+                    if(isShuffle) shuffleBtn.classList.add('active'); else shuffleBtn.classList.remove('active');
+                    window.switchTab(saved.tab);
+                    const song = songs.find(s => s.originalTitle === saved.songTitle);
+                    if(song) {
+                        const idx = currentPlaylist.findIndex(s => s.originalTitle === song.originalTitle);
+                        if(idx > -1) { currentIndex = idx; loadSong(song); }
+                    }
+                    return;
+                }
+            }
             if(isShuffle) currentIndex = Math.floor(Math.random() * songs.length);
             loadSong(currentPlaylist[currentIndex]);
             playSong();
-        }
+        };
 
-        /* --- PLAYER LOGIC --- */
-        function loadSong(song) {
-            if(!song) return;
-            currentlyPlayingSong = song; // Track independent of list
-            mainTitle.innerText = song.title;
-            audio.src = song.file;
-            statusBadge.innerText = "BUFFERING...";
-            statusBadge.style.color = "var(--flame-amber)";
-            progressBar.style.width = '0%';
-            
-            incrementPlayCount(song.originalTitle); // track by original ID-ish
-            
-            updateMainLikeBtn(song.originalTitle);
-            highlightTrack(song.id);
-            renderPlaylist(); 
+        window.switchTab = (tab) => {
+            currentTab = tab;
+            updateTabHighlight();
+            updatePlaylistView();
+            saveSession();
+        };
 
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: song.title,
-                    artist: 'Juice WRLD // 999',
-                    artwork: [{ src: 'https://placehold.co/512/000000/FFF?text=999', sizes: '512x512', type: 'image/png' }]
-                });
-                navigator.mediaSession.setActionHandler('play', playSong);
-                navigator.mediaSession.setActionHandler('pause', pauseSong);
-                navigator.mediaSession.setActionHandler('previoustrack', prevSong);
-                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
-            }
-        }
-
-        function playSong() {
-            audio.play().then(() => {
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                reactor.classList.add('reactor-active');
-                reactor.classList.remove('paused');
-                statusBadge.innerText = "PLAYING"; 
-                statusBadge.style.color = "var(--flame-amber)";
-                statusBadge.style.borderColor = "var(--flame-amber)";
-            }).catch(e => console.log(e));
-        }
-
-        function pauseSong() {
-            audio.pause();
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            reactor.classList.remove('reactor-active');
-            reactor.classList.add('paused');
-            statusBadge.innerText = "PAUSED";
-            statusBadge.style.color = "var(--text-dim)";
-            statusBadge.style.borderColor = "var(--text-dim)";
-        }
-
-        function togglePlay() {
-            if (audio.paused) playSong(); else pauseSong();
-        }
-
-        function nextSong() {
-            if (isShuffle) {
-                currentIndex = Math.floor(Math.random() * currentPlaylist.length);
-            } else {
-                currentIndex++;
-                if(currentIndex >= currentPlaylist.length) currentIndex = 0;
-            }
-            loadSong(currentPlaylist[currentIndex]);
-            playSong();
-        }
-
-        function prevSong() {
-            if (isShuffle) {
-                currentIndex = Math.floor(Math.random() * currentPlaylist.length);
-            } else {
-                currentIndex--;
-                if(currentIndex < 0) currentIndex = currentPlaylist.length - 1;
-            }
-            loadSong(currentPlaylist[currentIndex]);
-            playSong();
-        }
-
-        /* --- PLAY COUNTS --- */
-        function incrementPlayCount(originalTitle) {
-            playCounts[originalTitle] = (playCounts[originalTitle] || 0) + 1;
-            localStorage.setItem('jw999_playcounts', JSON.stringify(playCounts));
-        }
-
-        /* --- SEARCH LOGIC --- */
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            if(term.length < 1) {
-                searchResults.classList.remove('active');
-                return;
-            }
-            
-            // Search all songs (exclude hidden unless explicitly requested?) 
-            // For now search shows everything except hidden by default
-            const matches = songs.filter(s => 
-                s.title.toLowerCase().includes(term) && !hiddenSongs.includes(s.originalTitle)
-            );
-            renderSearchResults(matches);
-        });
-
-        function renderSearchResults(matches) {
-            searchResults.innerHTML = '';
-            if(matches.length === 0) {
-                searchResults.innerHTML = '<div style="padding:10px; color:#555;">NO DATA FOUND</div>';
-            } else {
-                matches.forEach(song => {
-                    const div = document.createElement('div');
-                    div.className = 'search-item';
-                    div.innerHTML = `<span class="search-item-title">${song.title}</span> <i class="fas fa-play" style="font-size:0.7rem; color:var(--flame-amber)"></i>`;
-                    div.onclick = () => {
-                        jumpToSong(song.id);
-                        searchInput.value = '';
-                        searchResults.classList.remove('active');
-                    };
-                    searchResults.appendChild(div);
-                });
-            }
-            searchResults.classList.add('active');
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.classList.remove('active');
-            }
-        });
-
-        /* --- ACTIONS --- */
-        function toggleCurrentLike() {
-            if(!currentlyPlayingSong) return;
-            toggleLikeData(currentlyPlayingSong.originalTitle);
-            updateMainLikeBtn(currentlyPlayingSong.originalTitle);
-            renderPlaylist(); 
-        }
-
-        function toggleLikeList(e, song) {
-            e.stopPropagation();
-            toggleLikeData(song.originalTitle);
-            if(currentPlaylist[currentIndex] && currentPlaylist[currentIndex].originalTitle === song.originalTitle) {
-                updateMainLikeBtn(song.originalTitle);
-            }
-            if(currentTab === 'saved') updatePlaylistView();
-            else renderPlaylist();
-        }
-
-        function toggleLikeData(title) {
-            if (likedSongs.includes(title)) {
-                likedSongs = likedSongs.filter(t => t !== title);
-            } else {
-                likedSongs.push(title);
-            }
-            localStorage.setItem('jw999_likes_v2', JSON.stringify(likedSongs));
-        }
-
-        function updateMainLikeBtn(title) {
-            const isLiked = likedSongs.includes(title);
-            mainLikeBtn.innerHTML = isLiked ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
-            mainLikeBtn.classList.toggle('liked', isLiked);
-        }
-
-        function toggleHide(e, title) {
-            if(e) e.stopPropagation();
-            if(hiddenSongs.includes(title)) {
-                hiddenSongs = hiddenSongs.filter(t => t !== title);
-            } else {
-                hiddenSongs.push(title);
-            }
-            localStorage.setItem('jw999_hidden', JSON.stringify(hiddenSongs));
-            
-            // If hiding current song, skip to next? 
-            // For now just update view.
-            updatePlaylistView(); 
-        }
-
-        function hideCurrentSong(e) {
-            if(currentlyPlayingSong) toggleHide(e, currentlyPlayingSong.originalTitle);
-        }
-
-        function triggerDownload(e, id) {
-            if(e) e.stopPropagation(); 
-            const song = songs.find(s => s.id === id);
-            if(!song) return;
-            
-            const a = document.createElement('a');
-            a.href = song.file;
-            a.download = `${song.title}.mp3`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        /* --- RENAMING --- */
-        function editSongTitle(e, song) {
-            if(e) e.stopPropagation();
-            const newTitle = prompt("RENAME TRACK:", song.title);
-            if (newTitle && newTitle.trim() !== "") {
-                customTitles[song.originalTitle] = newTitle.trim();
-                localStorage.setItem('jw999_custom_titles', JSON.stringify(customTitles));
-                
-                const s = songs.find(s => s.originalTitle === song.originalTitle);
-                if(s) s.title = newTitle.trim();
-                
-                if(mainTitle.innerText === song.title) mainTitle.innerText = newTitle.trim();
-                renderPlaylist();
-            }
-        }
-
-        function editCurrentSong(e) {
-            if(currentlyPlayingSong) editSongTitle(e, currentlyPlayingSong);
-        }
-
-        /* --- SCROLLING LOGIC --- */
-        function scrollToCurrentTrack() {
-            if(!currentlyPlayingSong) return;
-            const id = currentlyPlayingSong.id;
-            
-            // If the song isn't visible in current list (e.g. paused on a song, switched to Saved tab where it isn't), switch to All
-            const inList = currentPlaylist.find(s => s.id === id);
-            if(!inList) {
-                switchTab('all');
-                // Need to wait for render? Sync render handles it.
-                // Re-find index in new list
-                const newIndex = currentPlaylist.findIndex(s => s.id === id);
-                if(newIndex > -1) currentIndex = newIndex;
-            } else {
-                // If it is in list, sync index just in case tab switch desynced it
-                const newIndex = currentPlaylist.findIndex(s => s.id === id);
-                if(newIndex > -1) currentIndex = newIndex;
-            }
-            highlightTrack(id);
-        }
-
-        function jumpToSong(id) {
-            // Used by search results to force play and scroll
-            const realIndex = songs.findIndex(s => s.id === id);
-            if(realIndex > -1) {
-                const song = songs[realIndex];
-                // Ensure visible
-                if (currentTab === 'saved' && !likedSongs.includes(song.originalTitle)) switchTab('all');
-                if (currentTab !== 'all' && currentTab !== 'saved' && currentTab !== 'hidden') {
-                    // Playlist view
-                    const pl = playlists.find(p => p.id === currentTab);
-                    if (!pl || !pl.songs.includes(song.originalTitle)) switchTab('all');
-                }
-                
-                // Update Index
-                const visIndex = currentPlaylist.findIndex(s => s.id === id);
-                if(visIndex > -1) currentIndex = visIndex;
-                
-                loadSong(song);
-                playSong();
-                highlightTrack(id);
-            }
-        }
-
-        /* --- CUSTOM PLAYLISTS --- */
-        function openCreatePlaylistModal() {
-            document.getElementById('createPlaylistModal').classList.add('active');
-            document.getElementById('newPlaylistName').value = '';
-        }
-
-        function closeModals() {
-            document.getElementById('createPlaylistModal').classList.remove('active');
-            document.getElementById('addToPlaylistModal').classList.remove('active');
-        }
-
-        function selectIcon(el, icon) {
-            selectedIcon = icon;
-            document.querySelectorAll('.icon-option').forEach(e => e.classList.remove('selected'));
-            el.classList.add('selected');
-        }
-
-        function confirmCreatePlaylist() {
+        window.confirmCreatePlaylist = () => {
             const name = document.getElementById('newPlaylistName').value.trim();
             if(!name) return alert("NAME REQUIRED");
-            
             const id = 'pl_' + Date.now();
             playlists.push({ id, name, icon: selectedIcon, songs: [] });
-            localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
-            
-            closeModals();
+            saveLocal(); saveToCloud();
+            window.closeModals();
             renderPlaylistTabs();
-            switchTab(id);
-        }
+            window.switchTab(id);
+        };
 
-        function renderPlaylistTabs() {
-            // Icons for Database, Saved, Hidden
-            crateHeader.innerHTML = `
-                <button class="crate-tab" id="tabAll" onclick="switchTab('all')" title="DATABASE"><i class="fas fa-save"></i></button>
-                <button class="crate-tab" id="tabSaved" onclick="switchTab('saved')" title="SAVED CRATE"><i class="fas fa-heart" style="color: var(--rust-blaze);"></i></button>
-                <button class="crate-tab" id="tabHidden" onclick="switchTab('hidden')" title="ARCHIVE"><i class="fas fa-eye-slash"></i></button>
-            `;
-            
-            // Custom Playlists (Icons Only)
-            playlists.forEach(pl => {
-                const btn = document.createElement('button');
-                btn.className = 'crate-tab';
-                btn.id = `tab_${pl.id}`;
-                btn.innerHTML = `<i class="fas ${pl.icon}"></i>`;
-                btn.title = pl.name;
-                btn.onclick = () => switchTab(pl.id);
-                crateHeader.appendChild(btn);
-            });
-
-            // Create Button
-            const createBtn = document.createElement('button');
-            createBtn.className = 'crate-tab crate-tab-create';
-            createBtn.innerHTML = '<i class="fas fa-plus"></i>';
-            createBtn.onclick = openCreatePlaylistModal;
-            crateHeader.appendChild(createBtn);
-
-            updateTabHighlight();
-        }
-
-        function openAddToPlaylistModal(e, title) {
+        window.openAddToPlaylistModal = (e, title) => {
             if(e) e.stopPropagation();
             if(playlists.length === 0) return alert("CREATE A PLAYLIST FIRST (+)");
-            
-            // If argument provided (from list), use it. Otherwise use current playing song
-            if(typeof title === 'string') {
-                currentAddToSong = title;
-            } else if (currentlyPlayingSong) {
-                currentAddToSong = currentlyPlayingSong.originalTitle;
-            }
-
+            if(typeof title === 'string') currentAddToSong = title;
+            else if (currentlyPlayingSong) currentAddToSong = currentlyPlayingSong.originalTitle;
             if(!currentAddToSong) return;
 
             const list = document.getElementById('playlistSelectList');
             list.innerHTML = '';
-            
             playlists.forEach(pl => {
                 const div = document.createElement('div');
                 div.className = 'playlist-option';
                 div.innerHTML = `<i class="fas ${pl.icon}"></i> ${pl.name}`;
-                div.onclick = () => addToPlaylist(pl.id, currentAddToSong);
+                div.onclick = () => {
+                    const p = playlists.find(x => x.id === pl.id);
+                    if(p && !p.songs.includes(currentAddToSong)) {
+                        p.songs.push(currentAddToSong);
+                        saveLocal(); saveToCloud();
+                        alert(`ADDED TO ${p.name}`);
+                    } else alert("ALREADY IN FREQUENCY");
+                    window.closeModals();
+                };
                 list.appendChild(div);
             });
-            
             document.getElementById('addToPlaylistModal').classList.add('active');
-        }
+        };
 
-        function addToPlaylist(plId, title) { // title here is originalTitle
-            const pl = playlists.find(p => p.id === plId);
-            if(pl && !pl.songs.includes(title)) {
-                pl.songs.push(title);
-                localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
-                alert(`ADDED TO ${pl.name}`);
-            } else if (pl) {
-                alert("ALREADY IN FREQUENCY");
-            }
-            closeModals();
-        }
+        window.closeModals = () => {
+            document.getElementById('createPlaylistModal').classList.remove('active');
+            document.getElementById('addToPlaylistModal').classList.remove('active');
+        };
 
-        /* --- PLAYLIST EDIT/DELETE --- */
-        function editPlaylistName() {
-            const pl = playlists.find(p => p.id === currentTab);
-            if(!pl) return;
-            const newName = prompt("RENAME PLAYLIST:", pl.name);
-            if(newName && newName.trim() !== "") {
-                pl.name = newName.trim();
-                localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
-                updatePlaylistView();
-                renderPlaylistTabs(); 
-            }
-        }
+        window.selectIcon = (el, icon) => {
+            selectedIcon = icon;
+            document.querySelectorAll('.icon-option').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+        };
 
-        function deletePlaylist() {
-            const pl = playlists.find(p => p.id === currentTab);
-            if(!pl) return;
-            if(confirm(`DELETE PLAYLIST "${pl.name}"?`)) {
-                playlists = playlists.filter(p => p.id !== currentTab);
-                localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
-                renderPlaylistTabs();
-                switchTab('all');
-            }
-        }
-
-        function removeFromCurrentPlaylist(e, originalTitle) {
-            if(e) e.stopPropagation();
-            const pl = playlists.find(p => p.id === currentTab);
-            if(!pl) return;
-            
-            pl.songs = pl.songs.filter(t => t !== originalTitle);
-            localStorage.setItem('jw999_custom_playlists', JSON.stringify(playlists));
-            updatePlaylistView();
-        }
-
-        /* --- NAVIGATION --- */
-        function switchTab(tab) {
-            currentTab = tab;
-            updateTabHighlight();
-            updatePlaylistView();
-        }
-
-        function updateTabHighlight() {
-            document.querySelectorAll('.crate-tab').forEach(b => b.classList.remove('active'));
-            if(currentTab === 'all') document.getElementById('tabAll').classList.add('active');
-            else if(currentTab === 'saved') document.getElementById('tabSaved').classList.add('active');
-            else if(currentTab === 'hidden') document.getElementById('tabHidden').classList.add('active');
-            else {
-                const el = document.getElementById(`tab_${currentTab}`);
-                if(el) el.classList.add('active');
-            }
-        }
-
-        function updatePlaylistView() {
-            let label = "DATABASE";
-            plEditControls.innerHTML = ''; 
-            
-            // Handle deleting the dynamic delete button if it exists
-            const actionsGroup = document.querySelector('.pl-actions-group');
-            const existingDel = actionsGroup.querySelector('.pl-delete-main');
-            if(existingDel) existingDel.remove();
-
-            if (currentTab === 'all') {
-                currentPlaylist = songs.filter(s => !hiddenSongs.includes(s.originalTitle));
-                label = "DATABASE";
-            } 
-            else if (currentTab === 'saved') {
-                currentPlaylist = songs.filter(s => likedSongs.includes(s.originalTitle));
-                label = "SAVED CRATE";
-            } 
-            else if (currentTab === 'hidden') {
-                currentPlaylist = songs.filter(s => hiddenSongs.includes(s.originalTitle));
-                label = "ARCHIVED";
-            } 
-            else {
-                const pl = playlists.find(p => p.id === currentTab);
-                if(pl) {
-                    currentPlaylist = songs.filter(s => pl.songs.includes(s.originalTitle));
-                    label = pl.name;
-                    // Add Edit/Delete controls
-                    plEditControls.innerHTML = `
-                        <button class="pl-edit-btn" onclick="editPlaylistName()"><i class="fas fa-pencil-alt"></i></button>
-                    `;
-                    
-                    // Add delete playlist button
-                    const delBtn = document.createElement('button');
-                    delBtn.className = 'pl-act-btn delete pl-delete-main';
-                    delBtn.innerHTML = '<i class="fas fa-trash"></i> DELETE';
-                    delBtn.onclick = deletePlaylist;
-                    delBtn.style.fontSize = '0.8rem';
-                    delBtn.style.padding = '5px 10px';
-                    actionsGroup.appendChild(delBtn);
-                } else {
-                    currentPlaylist = [];
-                }
-            }
-            currentPlaylistName.innerText = label;
-            renderPlaylist();
-        }
-
-        function playCurrentView(shuffle) {
+        window.playCurrentView = (shuffle) => {
             if(currentPlaylist.length === 0) return alert("EMPTY VIEW");
             isShuffle = shuffle;
-            if(isShuffle) {
-                currentIndex = Math.floor(Math.random() * currentPlaylist.length);
-                shuffleBtn.classList.add('active');
-            } else {
-                currentIndex = 0;
-                shuffleBtn.classList.remove('active');
-            }
+            if(isShuffle) { currentIndex = Math.floor(Math.random() * currentPlaylist.length); shuffleBtn.classList.add('active'); }
+            else { currentIndex = 0; shuffleBtn.classList.remove('active'); }
             loadSong(currentPlaylist[currentIndex]);
             playSong();
-        }
+        };
 
-        function renderPlaylist() {
-            playlistContainer.innerHTML = '';
-            
-            if(currentPlaylist.length === 0) {
-                playlistContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#555; font-family:var(--font-ui);">[ EMPTY SIGNAL ]</div>';
-                return;
+        window.toggleLikeList = (e, {originalTitle}) => {
+            e.stopPropagation();
+            if (likedSongs.includes(originalTitle)) likedSongs = likedSongs.filter(t => t !== originalTitle);
+            else likedSongs.push(originalTitle);
+            saveLocal(); saveToCloud();
+            if(currentlyPlayingSong && currentlyPlayingSong.originalTitle === originalTitle) updateMainLikeBtn(originalTitle);
+            if(currentTab === 'saved') updatePlaylistView(); else renderPlaylist();
+        };
+
+        window.hideCurrentSong = (e) => {
+            if(currentlyPlayingSong) window.toggleHide(e, currentlyPlayingSong.originalTitle);
+        };
+
+        window.toggleHide = (e, title) => {
+            if(e) e.stopPropagation();
+            if(hiddenSongs.includes(title)) hiddenSongs = hiddenSongs.filter(t => t !== title);
+            else hiddenSongs.push(title);
+            saveLocal(); saveToCloud();
+            updatePlaylistView();
+        };
+
+        window.editCurrentSong = (e) => {
+            if(currentlyPlayingSong) window.editSongTitle(e, currentlyPlayingSong);
+        };
+
+        window.editSongTitle = (e, song) => {
+            if(e) e.stopPropagation();
+            const newTitle = prompt("RENAME TRACK:", song.title);
+            if (newTitle && newTitle.trim() !== "") {
+                customTitles[song.originalTitle] = newTitle.trim();
+                saveLocal(); saveToCloud();
+                const s = songs.find(x => x.originalTitle === song.originalTitle);
+                if(s) s.title = newTitle.trim();
+                if(mainTitle.innerText === song.title) mainTitle.innerText = newTitle.trim();
+                renderPlaylist();
             }
+        };
 
-            const isCustomPlaylist = !['all', 'saved', 'hidden'].includes(currentTab);
-
-            const html = currentPlaylist.map((song, idx) => {
-                const isLiked = likedSongs.includes(song.originalTitle);
-                const isActive = currentlyPlayingSong && currentlyPlayingSong.id === song.id;
-                const playCount = playCounts[song.originalTitle] || 0;
-                const isHiddenView = currentTab === 'hidden';
-                
-                // Safe string for onclick
-                const safeOrigTitle = song.originalTitle.replace(/'/g, "\\'");
-                const safeFile = song.file.replace(/'/g, "\\'");
-
-                // Determine the 4th button
-                let actionBtn4 = '';
-                if (isCustomPlaylist) {
-                    actionBtn4 = `<button class="mini-btn mini-remove" title="Remove from Playlist" onclick="removeFromCurrentPlaylist(event, '${safeOrigTitle}')"><i class="fas fa-trash"></i></button>`;
-                } else {
-                    actionBtn4 = `<button class="mini-btn mini-hide" onclick="toggleHide(event, '${safeOrigTitle}')"><i class="fas ${isHiddenView ? 'fa-eye' : 'fa-eye-slash'}"></i></button>`;
-                }
-
-                return `
-                <div class="track-item ${isActive ? 'playing' : ''}" id="track-${song.id}" onclick="playSpecific(${song.id})">
-                    <div class="track-left">
-                        <span class="track-index">${idx+1}</span>
-                        <span class="track-name">${song.title}</span>
-                    </div>
-                    <div class="track-right">
-                        <span class="play-count"><i class="fas fa-play" style="font-size:0.6rem;"></i> ${playCount}</span>
-                        <div class="track-actions">
-                            <button class="mini-btn mini-edit" title="Rename Song" onclick="editSongTitle(event, {title: '${song.title.replace(/'/g, "\\'")}', originalTitle: '${safeOrigTitle}'})">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                            <button class="mini-btn mini-heart ${isLiked ? 'liked' : ''}" onclick="toggleLikeList(event, {originalTitle:'${safeOrigTitle}'})">
-                                <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
-                            </button>
-                            <button class="mini-btn mini-add" onclick="openAddToPlaylistModal(event, '${safeOrigTitle}')">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="mini-btn mini-download" onclick="triggerDownload(event, ${song.id})">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            ${actionBtn4}
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-            
-            playlistContainer.innerHTML = html;
-            
-            if(currentlyPlayingSong) highlightTrack(currentlyPlayingSong.id);
-        }
-
-        window.playSpecific = function(id) {
+        window.playSpecific = (id) => {
             const realIndex = songs.findIndex(s => s.id === id);
             if(realIndex > -1) {
                 const visIndex = currentPlaylist.findIndex(s => s.id === id);
@@ -1585,64 +649,246 @@
             }
         };
 
+        window.scrollToCurrentTrack = () => {
+            if(!currentlyPlayingSong) return;
+            const id = currentlyPlayingSong.id;
+            const inList = currentPlaylist.find(s => s.id === id);
+            if(!inList) {
+                window.switchTab('all');
+                const newIndex = currentPlaylist.findIndex(s => s.id === id);
+                if(newIndex > -1) currentIndex = newIndex;
+            } else {
+                const newIndex = currentPlaylist.findIndex(s => s.id === id);
+                if(newIndex > -1) currentIndex = newIndex;
+            }
+            highlightTrack(id);
+        };
+
+        /* --- INTERNAL HELPERS --- */
+        function createStars() {
+            if(starLayer.innerHTML !== "") return;
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`; star.style.height = `${size}px`;
+                star.style.animationDuration = `${2 + Math.random() * 4}s`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starLayer.appendChild(star);
+            }
+        }
+
+        function saveSession() {
+            if(!currentlyPlayingSong) return;
+            const session = { songTitle: currentlyPlayingSong.originalTitle, tab: currentTab, isShuffle: isShuffle };
+            localStorage.setItem('jw999_session', JSON.stringify(session));
+        }
+
+        function loadSong(song) {
+            if(!song) return;
+            currentlyPlayingSong = song;
+            saveSession();
+            mainTitle.innerText = song.title;
+            audio.src = song.file;
+            statusBadge.innerText = "BUFFERING..."; statusBadge.style.color = "var(--flame-amber)";
+            progressBar.style.width = '0%';
+            playCounts[song.originalTitle] = (playCounts[song.originalTitle] || 0) + 1;
+            saveLocal(); saveToCloud();
+            updateMainLikeBtn(song.originalTitle);
+            highlightTrack(song.id);
+            renderPlaylist(); 
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({ title: song.title, artist: 'Juice WRLD // 999', artwork: [{ src: 'https://placehold.co/512/000000/FFF?text=999', sizes: '512x512', type: 'image/png' }] });
+                navigator.mediaSession.setActionHandler('play', playSong); navigator.mediaSession.setActionHandler('pause', pauseSong);
+                navigator.mediaSession.setActionHandler('previoustrack', prevSong); navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+            }
+        }
+
+        function playSong() {
+            audio.play().then(() => {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                reactor.classList.add('reactor-active'); reactor.classList.remove('paused');
+                statusBadge.innerText = "PLAYING"; statusBadge.style.color = "var(--flame-amber)";
+            }).catch(e => console.log(e));
+        }
+
+        function pauseSong() {
+            audio.pause();
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            reactor.classList.remove('reactor-active'); reactor.classList.add('paused');
+            statusBadge.innerText = "PAUSED"; statusBadge.style.color = "var(--text-dim)";
+        }
+
+        function nextSong() {
+            if (isShuffle) currentIndex = Math.floor(Math.random() * currentPlaylist.length);
+            else { currentIndex++; if(currentIndex >= currentPlaylist.length) currentIndex = 0; }
+            loadSong(currentPlaylist[currentIndex]); playSong();
+        }
+
+        function prevSong() {
+            if (isShuffle) currentIndex = Math.floor(Math.random() * currentPlaylist.length);
+            else { currentIndex--; if(currentIndex < 0) currentIndex = currentPlaylist.length - 1; }
+            loadSong(currentPlaylist[currentIndex]); playSong();
+        }
+
+        function updateMainLikeBtn(title) {
+            const isLiked = likedSongs.includes(title);
+            mainLikeBtn.innerHTML = isLiked ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+            mainLikeBtn.classList.toggle('liked', isLiked);
+        }
+
         function highlightTrack(id) {
             const el = document.getElementById(`track-${id}`);
             if(el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
 
-        /* --- EVENTS --- */
-        playBtn.addEventListener('click', togglePlay);
+        function updateTabHighlight() {
+            document.querySelectorAll('.crate-tab').forEach(b => b.classList.remove('active'));
+            if(currentTab === 'all') document.getElementById('tabAll').classList.add('active');
+            else if(currentTab === 'saved') document.getElementById('tabSaved').classList.add('active');
+            else if(currentTab === 'hidden') document.getElementById('tabHidden').classList.add('active');
+            else { const el = document.getElementById(`tab_${currentTab}`); if(el) el.classList.add('active'); }
+        }
+
+        function renderPlaylistTabs() {
+            crateHeader.innerHTML = `<button class="crate-tab" id="tabAll" onclick="window.switchTab('all')" title="DATABASE"><i class="fas fa-save"></i></button><button class="crate-tab" id="tabSaved" onclick="window.switchTab('saved')" title="SAVED CRATE"><i class="fas fa-heart" style="color: var(--rust-blaze);"></i></button><button class="crate-tab" id="tabHidden" onclick="window.switchTab('hidden')" title="ARCHIVE"><i class="fas fa-eye-slash"></i></button>`;
+            playlists.forEach(pl => {
+                const btn = document.createElement('button');
+                btn.className = 'crate-tab'; btn.id = `tab_${pl.id}`;
+                btn.innerHTML = `<i class="fas ${pl.icon}"></i>`; btn.title = pl.name;
+                btn.onclick = () => window.switchTab(pl.id);
+                crateHeader.appendChild(btn);
+            });
+            const createBtn = document.createElement('button');
+            createBtn.className = 'crate-tab crate-tab-create';
+            createBtn.innerHTML = '<i class="fas fa-plus"></i>';
+            createBtn.onclick = () => document.getElementById('createPlaylistModal').classList.add('active');
+            crateHeader.appendChild(createBtn);
+            updateTabHighlight();
+        }
+
+        function updatePlaylistView() {
+            let label = "DATABASE";
+            plEditControls.innerHTML = ''; 
+            const actionsGroup = document.querySelector('.pl-actions-group');
+            const existingDel = actionsGroup.querySelector('.pl-delete-main');
+            if(existingDel) existingDel.remove();
+
+            if (currentTab === 'all') { currentPlaylist = songs.filter(s => !hiddenSongs.includes(s.originalTitle)); label = "DATABASE"; } 
+            else if (currentTab === 'saved') { currentPlaylist = songs.filter(s => likedSongs.includes(s.originalTitle)); label = "SAVED CRATE"; } 
+            else if (currentTab === 'hidden') { currentPlaylist = songs.filter(s => hiddenSongs.includes(s.originalTitle)); label = "ARCHIVED"; } 
+            else {
+                const pl = playlists.find(p => p.id === currentTab);
+                if(pl) {
+                    currentPlaylist = songs.filter(s => pl.songs.includes(s.originalTitle)); label = pl.name;
+                    plEditControls.innerHTML = `<button class="pl-edit-btn" onclick="editPlaylistName()"><i class="fas fa-pencil-alt"></i></button>`;
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'pl-act-btn delete pl-delete-main';
+                    delBtn.innerHTML = '<i class="fas fa-trash"></i> DELETE';
+                    delBtn.onclick = () => {
+                        if(confirm(`DELETE PLAYLIST "${pl.name}"?`)) {
+                            playlists = playlists.filter(p => p.id !== currentTab);
+                            saveLocal(); saveToCloud(); renderPlaylistTabs(); window.switchTab('all');
+                        }
+                    };
+                    delBtn.style.fontSize = '0.8rem'; delBtn.style.padding = '5px 10px';
+                    actionsGroup.appendChild(delBtn);
+                } else currentPlaylist = [];
+            }
+            currentPlaylistName.innerText = label;
+            renderPlaylist();
+        }
+
+        function renderPlaylist() {
+            playlistContainer.innerHTML = '';
+            if(currentPlaylist.length === 0) { playlistContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#555; font-family:var(--font-ui);">[ EMPTY SIGNAL ]</div>'; return; }
+            const isCustomPlaylist = !['all', 'saved', 'hidden'].includes(currentTab);
+            const html = currentPlaylist.map((song, idx) => {
+                const isLiked = likedSongs.includes(song.originalTitle);
+                const isActive = currentlyPlayingSong && currentlyPlayingSong.id === song.id;
+                const playCount = playCounts[song.originalTitle] || 0;
+                const isHiddenView = currentTab === 'hidden';
+                const safeOrigTitle = song.originalTitle.replace(/'/g, "\\'");
+                const safeFile = song.file.replace(/'/g, "\\'");
+                let actionBtn4 = '';
+                if (isCustomPlaylist) {
+                    actionBtn4 = `<button class="mini-btn mini-remove" title="Remove from Playlist" onclick="event.stopPropagation(); const pl=playlists.find(p=>p.id===currentTab); pl.songs=pl.songs.filter(t=>t!=='${safeOrigTitle}'); localStorage.setItem('jw999_custom_playlists',JSON.stringify(playlists)); updatePlaylistView();"><i class="fas fa-trash"></i></button>`;
+                } else {
+                    actionBtn4 = `<button class="mini-btn mini-hide" onclick="window.toggleHide(event, '${safeOrigTitle}')"><i class="fas ${isHiddenView ? 'fa-eye' : 'fa-eye-slash'}"></i></button>`;
+                }
+                return `
+                <div class="track-item ${isActive ? 'playing' : ''}" id="track-${song.id}" onclick="window.playSpecific(${song.id})">
+                    <div class="track-left"><span class="track-index">${idx+1}</span><span class="track-name">${song.title}</span></div>
+                    <div class="track-right"><span class="play-count"><i class="fas fa-play" style="font-size:0.6rem;"></i> ${playCount}</span>
+                        <div class="track-actions">
+                            <button class="mini-btn mini-edit" title="Rename Song" onclick="window.editSongTitle(event, {title: '${song.title.replace(/'/g, "\\'")}', originalTitle: '${safeOrigTitle}'})"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="mini-btn mini-heart ${isLiked ? 'liked' : ''}" onclick="window.toggleLikeList(event, {originalTitle:'${safeOrigTitle}'})"><i class="${isLiked ? 'fas' : 'far'} fa-heart"></i></button>
+                            <button class="mini-btn mini-add" onclick="window.openAddToPlaylistModal(event, '${safeOrigTitle}')"><i class="fas fa-plus"></i></button>
+                            <button class="mini-btn mini-download" onclick="event.stopPropagation(); const a=document.createElement('a'); a.href='${safeFile}'; a.download='${song.title}.mp3'; document.body.appendChild(a); a.click(); document.body.removeChild(a);"><i class="fas fa-download"></i></button>
+                            ${actionBtn4}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            playlistContainer.innerHTML = html;
+            if(currentlyPlayingSong) highlightTrack(currentlyPlayingSong.id);
+        }
+
+        // --- GLOBAL LISTENERS ---
+        playBtn.addEventListener('click', () => { if(audio.paused) playSong(); else pauseSong(); });
         nextBtn.addEventListener('click', nextSong);
         prevBtn.addEventListener('click', prevSong);
-        mainLikeBtn.addEventListener('click', toggleCurrentLike);
-        
-        shuffleBtn.addEventListener('click', () => {
-            isShuffle = !isShuffle;
-            shuffleBtn.classList.toggle('active');
+        mainLikeBtn.addEventListener('click', () => { if(currentlyPlayingSong) window.toggleLikeList({stopPropagation:()=>{}}, {originalTitle: currentlyPlayingSong.originalTitle}); });
+        shuffleBtn.addEventListener('click', () => { isShuffle = !isShuffle; shuffleBtn.classList.toggle('active'); saveSession(); });
+        audio.addEventListener('timeupdate', () => { 
+            if(isNaN(audio.duration)) return;
+            progressBar.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+            currTimeEl.innerText = formatTime(audio.currentTime); totTimeEl.innerText = formatTime(audio.duration);
         });
-
-        audio.addEventListener('timeupdate', (e) => {
-            const cur = audio.currentTime;
-            const dur = audio.duration;
-            if(isNaN(dur)) return;
-            progressBar.style.width = (cur / dur) * 100 + '%';
-            currTimeEl.innerText = formatTime(cur);
-            // Updating the hovering total time not needed here anymore, handled by mousemove
-            totTimeEl.innerText = formatTime(dur);
-        });
-        
         audio.addEventListener('ended', nextSong);
-
-        // Click to Seek
         const scrubber = document.getElementById('scrubberContain');
-        scrubber.addEventListener('click', (e) => {
-            const width = scrubber.clientWidth;
-            const x = e.offsetX;
-            const dur = audio.duration;
-            if(dur) audio.currentTime = (x / width) * dur;
-        });
-
-        // Hover for Time Preview
-        scrubber.addEventListener('mousemove', (e) => {
-            const width = scrubber.clientWidth;
-            const x = e.offsetX;
-            const dur = audio.duration;
-            if(dur) {
-                const time = (x / width) * dur;
-                hoverDuration.innerText = formatTime(time);
-                hoverDuration.style.left = `${x}px`;
+        scrubber.addEventListener('click', (e) => { if(audio.duration) audio.currentTime = (e.offsetX / scrubber.clientWidth) * audio.duration; });
+        scrubber.addEventListener('mousemove', (e) => { if(audio.duration) { const t = (e.offsetX / scrubber.clientWidth) * audio.duration; hoverDuration.innerText = formatTime(t); hoverDuration.style.left = `${e.offsetX}px`; } });
+        
+        // Search
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            searchResults.innerHTML = '';
+            if(term.length < 1) { searchResults.classList.remove('active'); return; }
+            const matches = songs.filter(s => s.title.toLowerCase().includes(term) && !hiddenSongs.includes(s.originalTitle));
+            if(matches.length === 0) searchResults.innerHTML = '<div style="padding:10px; color:#555;">NO DATA FOUND</div>';
+            else {
+                matches.forEach(song => {
+                    const div = document.createElement('div'); div.className = 'search-item';
+                    div.innerHTML = `<span class="search-item-title">${song.title}</span> <i class="fas fa-play" style="font-size:0.7rem; color:var(--flame-amber)"></i>`;
+                    div.onclick = () => { window.playSpecific(song.id); searchInput.value = ''; searchResults.classList.remove('active'); };
+                    searchResults.appendChild(div);
+                });
             }
+            searchResults.classList.add('active');
         });
+        document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) searchResults.classList.remove('active'); });
 
         function formatTime(s) {
-            let m = Math.floor(s / 60);
-            let sec = Math.floor(s % 60);
+            let m = Math.floor(s / 60), sec = Math.floor(s % 60);
             if(sec < 10) sec = '0'+sec;
             return `${m}:${sec}`;
         }
 
-        init();
+        // Window Helper for Playlist Rename (Modules cant define global functions easily for inline HTML calls)
+        window.editPlaylistName = () => {
+            const pl = playlists.find(p => p.id === currentTab);
+            if(!pl) return;
+            const newName = prompt("RENAME PLAYLIST:", pl.name);
+            if(newName && newName.trim() !== "") {
+                pl.name = newName.trim(); saveLocal(); saveToCloud(); updatePlaylistView(); renderPlaylistTabs(); 
+            }
+        };
 
+        // Start
+        init();
     </script>
 </body>
 </html>
