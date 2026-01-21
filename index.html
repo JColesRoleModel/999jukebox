@@ -51,8 +51,26 @@
             --font-body: 'Rajdhani', sans-serif;
         }
 
-        * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--rust-blaze) var(--hull); user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background-color: var(--void); color: var(--chrome); font-family: var(--font-body); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--rust-blaze) var(--hull);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--void);
+            color: var(--chrome);
+            font-family: var(--font-body);
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
         /* --- VISUALS --- */
         .starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 120%, #2a1010 0%, var(--void) 70%); overflow: hidden; }
@@ -173,6 +191,32 @@
         .modal-btn:hover { background: var(--flame-amber); color: #000; }
         .modal-btn.cancel { border-color: var(--text-dim); color: var(--text-dim); }
         .modal-btn.cancel:hover { background: var(--text-dim); color: #000; }
+        
+        .power-btn-container {
+             display: flex;
+             justify-content: center;
+             align-items: center;
+        }
+        
+        .power-btn {
+            font-size: 8rem;
+            color: var(--flame-amber);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-shadow: 0 0 20px var(--rust-blaze);
+            animation: pulse-power 2s infinite alternate;
+        }
+        
+        .power-btn:hover {
+             transform: scale(1.1);
+             color: #fff;
+             text-shadow: 0 0 40px var(--flame-amber);
+        }
+        
+        @keyframes pulse-power {
+            from { text-shadow: 0 0 20px var(--rust-blaze); opacity: 0.8; }
+            to { text-shadow: 0 0 40px var(--flame-amber); opacity: 1; }
+        }
 
         @media (min-width: 601px) and (max-width: 1024px) { .reactor-container { width: 220px; height: 220px; } .song-title { font-size: 1.4rem; } }
         @media (max-width: 600px) {
@@ -204,17 +248,12 @@
 
     <!-- STARTUP MODAL -->
     <div class="modal-overlay active" id="startModal" style="z-index: 3000;">
-        <div class="modal-content">
-            <h1>AUDIO ENGINE // V999</h1>
-            <br>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-                <button class="modal-btn" onclick="startSystem('new')">
-                    <i class="fas fa-random"></i> IGNITE (SHUFFLE)
-                </button>
-                <button class="modal-btn" style="border-color:var(--text-dim); color:var(--text-dim);" onclick="startSystem('continue')">
-                    <i class="fas fa-play"></i> CONTINUE
-                </button>
+        <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
+            <!-- POWER BUTTON HOME SCREEN -->
+            <div class="power-btn-container">
+                <i class="fas fa-power-off power-btn" onclick="igniteSystem()"></i>
             </div>
+            <div style="margin-top: 20px; font-family: var(--font-ui); color: var(--flame-amber); letter-spacing: 2px;">IGNITE</div>
         </div>
     </div>
 
@@ -330,7 +369,6 @@
         if (window.initApp) {
             window.initApp();
         } else {
-            // Fallback if main script hasn't run yet (unlikely with this order, but safe)
             document.addEventListener('DOMContentLoaded', () => {
                 if(window.initApp) window.initApp();
             });
@@ -760,6 +798,7 @@
         let playCounts = {};
         let playlists = [];
         let customTitles = {}; 
+        let cachedSession = null;
         
         let currentPlaylist = [];
         let currentIndex = 0;
@@ -769,7 +808,6 @@
         let currentlyPlayingSong = null;
         let currentUser = null;
         let currentSongPlayed = false;
-        let initialLoadComplete = false;
 
         const audio = new Audio();
         
@@ -803,15 +841,10 @@
 
         /* --- TITLE CLEANER HELPER --- */
         function cleanDisplayTitle(raw) {
-            // Remove specific "Juice WRLD" patterns from anywhere in string (case insensitive)
-            // Patterns: "Juice WRLD", "JuiceWRLD", "Juice WRLD -", "JuiceWRLD-", "Juice WRLD,", "Juice WRLD X", "Juice WRLD &"
-            // Also clean file extension
             let title = raw.replace(/\.mp3$/i, '');
-            // Global replace of the specific phrases requested
             title = title.replace(/Juice\s*WRLD\s*[-X,&]?\s*/gi, '');
-            // Clean up any double spaces or leading/trailing separators left behind
             title = title.replace(/^[\s\-_]+|[\s\-_]+$/g, '').trim();
-            if(!title) title = "Unknown Title"; // Fallback if name was only Juice WRLD
+            if(!title) title = "Unknown Title"; 
             return title;
         }
 
@@ -900,24 +933,16 @@
                     songs.forEach(s => {
                         if (customTitles[s.originalTitle]) s.title = customTitles[s.originalTitle];
                     });
+                    
+                    // Cache session for manual ignite
+                    if(data.lastSession) cachedSession = data.lastSession;
 
                     renderPlaylistTabs();
                     updatePlaylistView();
                     
-                    if (!initialLoadComplete) {
-                        initialLoadComplete = true;
-                        if (data.lastSession) {
-                            restoreSession(data.lastSession);
-                        } else {
-                            startSystem();
-                        }
-                    }
                 } else {
-                    if (!initialLoadComplete) {
-                        initialLoadComplete = true;
-                        window.setDoc(docRef, { likedSongs: [], hiddenSongs: [], playCounts: {}, playlists: [], customTitles: {} });
-                        startSystem(); 
-                    }
+                    window.setDoc(docRef, { likedSongs: [], hiddenSongs: [], playCounts: {}, playlists: [], customTitles: {} });
+                    cachedSession = null;
                 }
             });
         }
@@ -940,18 +965,30 @@
             await window.updateDoc(docRef, { lastSession: session });
         }
 
+        /* --- SYSTEM IGNITION --- */
+        function igniteSystem() {
+            startModal.classList.remove('active');
+            
+            if(cachedSession) {
+                restoreSession(cachedSession);
+            } else {
+                startSystem();
+            }
+        }
+
         function restoreSession(session) {
             isShuffle = session.isShuffle;
             if(isShuffle) shuffleBtn.classList.add('active'); else shuffleBtn.classList.remove('active');
+            
             if(session.tab) switchTab(session.tab);
             
             const song = songs.find(s => s.originalTitle === session.songTitle);
             if(song) {
+                // Find index in current filtered list if possible
                 const idx = currentPlaylist.findIndex(s => s.originalTitle === song.originalTitle);
                 if(idx > -1) currentIndex = idx;
                 
-                loadSong(song);
-                audio.currentTime = session.time || 0;
+                loadSong(song, session.time || 0); // Pass start time
                 playSong();
             } else {
                 startSystem();
@@ -959,7 +996,6 @@
         }
 
         function startSystem() {
-            startModal.classList.remove('active');
             if(isShuffle) currentIndex = Math.floor(Math.random() * songs.length);
             currentPlaylist = [...songs];
             loadSong(currentPlaylist[currentIndex]);
@@ -967,13 +1003,15 @@
         }
 
         /* --- PLAYER LOGIC --- */
-        function loadSong(song) {
+        function loadSong(song, startTime = 0) {
             if(!song) return;
             currentlyPlayingSong = song;
             currentSongPlayed = false;
             
             mainTitle.innerText = song.title;
             audio.src = song.file;
+            audio.currentTime = startTime; // Set Time Immediately
+            
             statusBadge.innerText = "BUFFERING...";
             statusBadge.style.color = "var(--flame-amber)";
             
