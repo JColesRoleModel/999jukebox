@@ -5,18 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DEATH RACE // 999 JUKEBOX</title>
     
-    <!-- FAVICON (999 CIRCLE) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1E1413">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="999 Jukebox">
+    <link rel="apple-touch-icon" href="icon-180.png">
+    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23010001' stroke='%23DAAF61' stroke-width='5'/><text x='50' y='65' font-family='sans-serif' font-size='40' font-weight='bold' fill='%23fff' text-anchor='middle'>999</text></svg>">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Oxanium:wght@400;600;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Firebase SDKs (Imports) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
         import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
@@ -246,10 +250,8 @@
     <div class="star-layer" id="starLayer"></div>
     <div class="grain"></div>
 
-    <!-- STARTUP MODAL -->
     <div class="modal-overlay active" id="startModal" style="z-index: 3000;">
         <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
-            <!-- POWER BUTTON HOME SCREEN -->
             <div class="power-btn-container">
                 <i class="fas fa-power-off power-btn" onclick="igniteSystem()"></i>
             </div>
@@ -257,7 +259,6 @@
         </div>
     </div>
 
-    <!-- TOP BAR -->
     <header class="top-bar">
         <div class="app-title">999 JUKEBOX</div>
         <div class="top-right-group">
@@ -269,7 +270,6 @@
         </div>
     </header>
 
-    <!-- MODALS -->
     <div class="modal-overlay" id="createPlaylistModal">
         <div class="modal-content">
             <div class="modal-title">NEW FREQUENCY</div>
@@ -287,7 +287,6 @@
         </div>
     </div>
 
-    <!-- PLAYER -->
     <section class="module-deck">
         <div class="player-top-wrapper">
             <div class="reactor-container paused" id="reactor">
@@ -315,7 +314,6 @@
         </div>
     </section>
 
-    <!-- CRATE -->
     <section class="module-crate">
         <div class="crate-header" id="crateHeader"></div>
         <div class="playlist-controls" id="playlistControls">
@@ -328,7 +326,6 @@
         <div class="track-list" id="playlistContainer"></div>
     </section>
 
-    <!-- CONSOLIDATED FIREBASE SDK & CONFIG -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
         import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
@@ -375,7 +372,6 @@
         }
     </script>
 
-    <!-- MAIN APP LOGIC -->
     <script>
         const PATH_AUDIO = 'assets/audio/';
         
@@ -400,7 +396,7 @@
             "67 - Martian.mp3",
             "67.mp3",
             "70_s -Perfect Loop-.mp3",
-            "734 (Think Too Much)  -Session Edit-.mp3",
+            "734 (Think Too Much)  -Session Edit-.mp3",
             "734 (Think Too Much) -Session Edit v2-.mp3",
             "999 (Triple 9) -Session Edit-.mp3",
             "Again (Watch Yo_ Step).mp3",
@@ -532,10 +528,10 @@
             "Jet Lag.mp3",
             "Jetta.mp3",
             "Juice world So Fake (full Session)-(unreleased).mp3",
-            "Juice WRLD   Boss Of Me  Lyrics.mp3",
-            "Juice WRLD  -  High Again (Unreleased).mp3",
-            "Juice WRLD -  Cowboy Hunt (Unreleased).mp3",
-            "Juice WRLD -  Extra (CDQ Remaster) (Remaster W⧸ New Snippets) w⧸official beat.mp3",
+            "Juice WRLD   Boss Of Me  Lyrics.mp3",
+            "Juice WRLD  -  High Again (Unreleased).mp3",
+            "Juice WRLD -  Cowboy Hunt (Unreleased).mp3",
+            "Juice WRLD -  Extra (CDQ Remaster) (Remaster W⧸ New Snippets) w⧸official beat.mp3",
             "juice wrld - ＂you don't know me＂ (unreleased the party never ends).mp3",
             "Juice WRLD - 24⧸7 (365) (New Leak⧸CDQ) (Prod. Danny Wolf, DILIP & Instupendo).mp3",
             "Juice Wrld - 911 (Lyrics).mp3",
@@ -566,7 +562,7 @@
             "Juice WRLD - Grace [Unreleased].mp3",
             "Juice WRLD - Hell On Earth (Unreleased) [Prod. Max Chris].mp3",
             "Juice WRLD - Junkie (Unreleased) [Prod. Mortus].mp3",
-            "Juice Wrld - Lost In The Dark place Video Lyrics  (unreleased).mp3",
+            "Juice Wrld - Lost In The Dark place Video Lyrics  (unreleased).mp3",
             "Juice WRLD - Matte Black (Unreleased).mp3",
             "Juice WRLD - Mayweather (Unreleased) [Prod. Max Chris].mp3",
             "Juice WRLD - Miss Her (Unreleased) [Prod. Max Chris].mp3",
@@ -588,7 +584,7 @@
             "Juice WRLD - SIP (Always Workin) (EXTENDED) (CDQ) (UNRELEASED) (NEW).mp3",
             "Juice WRLD - Smoke a Half (unreleased).mp3",
             "Juice WRLD - So Low (Unreleased).mp3",
-            "Juice WRLD - Styrofoam  (NEW LEAK) (UNRELEASED).mp3",
+            "Juice WRLD - Styrofoam  (NEW LEAK) (UNRELEASED).mp3",
             "Juice WRLD - Superpower (Unreleased)Prod [Max Chris].mp3",
             "Juice WRLD - Tag (EXTENDED) (NEW LEAK) (CDQ) (UNRELEASED).mp3",
             "Juice WRLD - Talking to voices (Lyrics).mp3",
@@ -720,7 +716,7 @@
             "Spinning.mp3",
             "starstruck.mp3",
             "Start It Up (Full Freestyle) .mp3",
-            "Stay Sober ",
+            "Stay Sober ",
             "Stick Talk _ Lava Girl.mp3",
             "Stolen.mp3",
             "Stumblin.mp3",
@@ -1479,7 +1475,14 @@
         shuffleBtn.addEventListener('click', () => { isShuffle = !isShuffle; shuffleBtn.classList.toggle('active'); saveSession(); });
         document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) searchResults.classList.remove('active'); });
 
-        // Removed direct init() call here. It is called by the Firebase module script.
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registered!'))
+                .catch(err => console.log('Registration failed: ', err));
+            });
+        }
     </script>
 </body>
 </html>

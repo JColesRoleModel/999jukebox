@@ -1,0 +1,22 @@
+{
+  "short_name": "999 Jukebox",
+  "name": "999 JUKEBOX // DEATH RACE",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#010001",
+  "display": "standalone",
+  "theme_color": "#1E1413",
+  "description": "Death Race Jukebox PWA"
+}
