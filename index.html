@@ -243,6 +243,7 @@
         }
         @media (max-height: 600px) and (orientation: landscape) { .reactor-container { width: 80px; height: 80px; margin-bottom: 5px; } .module-deck { padding: 5px; } .song-title { font-size: 1rem; } }
     </style>
+    <script src="https://pl28554720.effectivegatecpm.com/f0/ac/6f/f0ac6f996d5d722e4e8faf55694ffef1.js"></script>
 </head>
 <body>
 
@@ -1305,7 +1306,7 @@
                         <span class="play-count"><i class="fas fa-play" style="font-size:0.6rem;"></i> ${playCount}</span>
                         <div class="track-actions">
                             <button class="mini-btn mini-edit" onclick="editSongTitle(event, {title: '${song.title.replace(/'/g, "\\'")}', originalTitle: '${safeOrigTitle}'})"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="mini-btn mini-heart ${isLiked ? 'liked' : ''}" onclick="toggleLikeList(event, {originalTitle:'${safeOrigTitle}'})"><i class="${isLiked ? 'fas' : 'far'} fa-heart"></i></button>
+                            <button class="mini-btn mini-heart ${isLiked ? 'liked' : ''}" onclick="toggleLikeList(event, {originalTitle:'${safeOrigTitle}'})"><i class="fas fa-pencil-alt"></i></button>
                             <button class="mini-btn mini-add" onclick="openAddToPlaylistModal(event, '${safeOrigTitle}')"><i class="fas fa-plus"></i></button>
                             <button class="mini-btn mini-download" onclick="triggerDownload(event, ${song.id})"><i class="fas fa-download"></i></button>
                             ${actionBtn4}
