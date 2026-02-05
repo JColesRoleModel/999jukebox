@@ -1,6 +1,6 @@
 {
-  "short_name": "999 Jukebox",
-  "name": "999 JUKEBOX // DEATH RACE",
+  "short_name": "999 Vault",
+  "name": "999 VAULT // DEATH RACE",
   "icons": [
     {
       "src": "icon-192.png",
@@ -18,5 +18,5 @@
   "background_color": "#010001",
   "display": "standalone",
   "theme_color": "#1E1413",
-  "description": "Death Race Jukebox PWA"
+  "description": "Death Race Vault PWA"
 }
