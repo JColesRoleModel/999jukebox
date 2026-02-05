@@ -1721,7 +1721,13 @@
             }
         ];
 
-        let playlists = [...DEFAULT_ALBUMS];  // Start with defaults
+        let playlists = [];  // User playlists only (defaults are separate)
+
+        // Helper function to find playlist in both default and user playlists
+        function findPlaylist(id) {
+            return DEFAULT_ALBUMS.find(p => p.id === id) || playlists.find(p => p.id === id);
+        }
+
         let customTitles = {};
         let cachedSession = null;
 
@@ -1846,12 +1852,8 @@
                     likedSongs = data.likedSongs || [];
                     hiddenSongs = data.hiddenSongs || [];
                     playCounts = data.playCounts || {};
-                    // Merge user playlists with default albums (always keep defaults)
-                    const userPlaylists = data.playlists || [];
-                    const userCustomPlaylists = userPlaylists.filter(p =>
-                        !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
-                    );
-                    playlists = [...DEFAULT_ALBUMS, ...userCustomPlaylists];
+                    // User playlists only (defaults are always separate)
+                    playlists = data.playlists || [];
                     customTitles = data.customTitles || {};
 
                     songs.forEach(s => {
@@ -2193,7 +2195,7 @@
                 currentPlaylist = songs.filter(s => hiddenSongs.includes(s.originalTitle));
                 label = "ARCHIVED";
             } else {
-                const pl = playlists.find(p => p.id === currentTab);
+                const pl = findPlaylist(currentTab);
                 if (pl) {
                     currentPlaylist = songs.filter(s => pl.songs.includes(s.originalTitle));
                     label = pl.name;
@@ -2273,8 +2275,9 @@
         };
 
         function highlightTrack(id) {
-            const el = document.getElementById(`track-${id}`);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Removed auto-scroll - let user control their scroll position
+            // const el = document.getElementById(`track-${id}`);
+            // if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function scrollToCurrentTrack() {
@@ -2358,7 +2361,7 @@
             document.getElementById('addToPlaylistModal').classList.add('active');
         }
         function addToPlaylist(plId, title) {
-            const pl = playlists.find(p => p.id === plId);
+            const pl = findPlaylist(plId);
             if (pl && !pl.songs.includes(title)) {
                 pl.songs.push(title);
                 const userPlaylists = playlists.filter(p =>
@@ -2370,8 +2373,15 @@
             closeModals();
         }
         function editPlaylistName() {
-            const pl = playlists.find(p => p.id === currentTab);
+            const pl = findPlaylist(currentTab);
             if (!pl) return;
+
+            // Prevent editing default album names
+            if (['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(pl.id)) {
+                alert('Cannot rename default albums!');
+                return;
+            }
+
             const newName = prompt("RENAME PLAYLIST:", pl.name);
             if (newName && newName.trim() !== "") {
                 pl.name = newName.trim();
@@ -2381,39 +2391,52 @@
             }
         }
         function deletePlaylist() {
-            const pl = playlists.find(p => p.id === currentTab);
-            if (!pl) return;
-
-            // Prevent deletion of default albums
-            if (['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(pl.id)) {
+            // Check if it's a default album (can't delete)
+            if (['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(currentTab)) {
                 alert('Cannot delete default albums!');
                 return;
             }
 
+            const pl = playlists.find(p => p.id === currentTab);
+            if (!pl) return;
+
             if (confirm(`DELETE PLAYLIST "${pl.name}"?`)) {
                 playlists = playlists.filter(p => p.id !== currentTab);
-                // Only save user playlists (exclude defaults)
-                const userPlaylists = playlists.filter(p =>
-                    !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
-                );
-                saveData('playlists', userPlaylists);
+                saveData('playlists', playlists);
                 renderPlaylistTabs();
                 switchTab('all');
             }
         }
         function removeFromCurrentPlaylist(e, originalTitle) {
             if (e) e.stopPropagation();
-            const pl = playlists.find(p => p.id === currentTab);
+            const pl = findPlaylist(currentTab);
             if (!pl) return;
+
+            // Prevent modification of default albums
+            if (['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(pl.id)) {
+                alert('Cannot modify default albums!');
+                return;
+            }
+
             pl.songs = pl.songs.filter(t => t !== originalTitle);
-            const userPlaylists = playlists.filter(p =>
-                !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
-            );
-            saveData('playlists', userPlaylists);
+            saveData('playlists', playlists);
             updatePlaylistView();
         }
         function renderPlaylistTabs() {
             crateHeader.innerHTML = `<button class="crate-tab" id="tabAll" onclick="switchTab('all')" title="DATABASE"><i class="fas fa-save"></i></button><button class="crate-tab" id="tabSaved" onclick="switchTab('saved')" title="SAVED CRATE"><i class="fas fa-heart" style="color: var(--rust-blaze);"></i></button><button class="crate-tab" id="tabHidden" onclick="switchTab('hidden')" title="ARCHIVE"><i class="fas fa-eye-slash"></i></button>`;
+
+            // ALWAYS render default albums first
+            DEFAULT_ALBUMS.forEach(pl => {
+                const btn = document.createElement('button');
+                btn.className = 'crate-tab';
+                btn.id = `tab_${pl.id}`;
+                btn.innerHTML = `<i class="fas ${pl.icon}"></i>`;
+                btn.title = pl.name;
+                btn.onclick = () => switchTab(pl.id);
+                crateHeader.appendChild(btn);
+            });
+
+            // Then render user playlists
             playlists.forEach(pl => {
                 const btn = document.createElement('button');
                 btn.className = 'crate-tab';
@@ -2423,6 +2446,7 @@
                 btn.onclick = () => switchTab(pl.id);
                 crateHeader.appendChild(btn);
             });
+
             const createBtn = document.createElement('button');
             createBtn.className = 'crate-tab crate-tab-create';
             createBtn.innerHTML = '<i class="fas fa-plus"></i>';
