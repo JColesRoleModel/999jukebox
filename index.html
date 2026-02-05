@@ -1556,7 +1556,7 @@
             "Rockstar Girl.mp3",
             "Runners.mp3",
             "Rush.mp3",
-            "Rv Rental Companies Cash In With Help From Tech Companies.mp3",
+
             "Saved By The Bell.mp3",
             "Say Goodbye To My Mom.mp3",
             "Scarface Freestyle.mp3",
@@ -1666,7 +1666,8 @@
         let likedSongs = [];
         let hiddenSongs = [];
         let playCounts = {};
-        let playlists = [
+        // Default albums that should ALWAYS be present
+        const DEFAULT_ALBUMS = [
             {
                 id: 'blessed_boys',
                 name: 'Blessed Boys',
@@ -1719,6 +1720,8 @@
                 ]
             }
         ];
+
+        let playlists = [...DEFAULT_ALBUMS];  // Start with defaults
         let customTitles = {};
         let cachedSession = null;
 
@@ -1843,7 +1846,12 @@
                     likedSongs = data.likedSongs || [];
                     hiddenSongs = data.hiddenSongs || [];
                     playCounts = data.playCounts || {};
-                    playlists = data.playlists || [];
+                    // Merge user playlists with default albums (always keep defaults)
+                    const userPlaylists = data.playlists || [];
+                    const userCustomPlaylists = userPlaylists.filter(p =>
+                        !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
+                    );
+                    playlists = [...DEFAULT_ALBUMS, ...userCustomPlaylists];
                     customTitles = data.customTitles || {};
 
                     songs.forEach(s => {
@@ -1857,6 +1865,7 @@
                     updatePlaylistView();
 
                 } else {
+                    // Initialize new user with default albums only
                     window.setDoc(docRef, { likedSongs: [], hiddenSongs: [], playCounts: {}, playlists: [], customTitles: {} });
                     cachedSession = null;
                 }
@@ -2124,8 +2133,19 @@
 
         /* --- RENAMING --- */
         function editSongTitle(e, song) {
-            if (e) e.stopPropagation();
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();  // Prevent event bubbling
+            }
+
+            // Prevent multiple prompts
+            if (window.editingInProgress) return;
+            window.editingInProgress = true;
+
             const newTitle = prompt("RENAME TRACK:", song.title);
+
+            window.editingInProgress = false;
+
             if (newTitle && newTitle.trim() !== "") {
                 customTitles[song.originalTitle] = newTitle.trim();
                 saveData('customTitles', customTitles);
@@ -2312,7 +2332,10 @@
             if (!name) return alert("NAME REQUIRED");
             const id = 'pl_' + Date.now();
             playlists.push({ id, name, icon: selectedIcon, songs: [] });
-            saveData('playlists', playlists);
+            const userPlaylists = playlists.filter(p =>
+                !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
+            );
+            saveData('playlists', userPlaylists);
             closeModals();
             renderPlaylistTabs();
             switchTab(id);
@@ -2338,7 +2361,10 @@
             const pl = playlists.find(p => p.id === plId);
             if (pl && !pl.songs.includes(title)) {
                 pl.songs.push(title);
-                saveData('playlists', playlists);
+                const userPlaylists = playlists.filter(p =>
+                    !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
+                );
+                saveData('playlists', userPlaylists);
                 alert(`ADDED TO ${pl.name}`);
             } else if (pl) alert("ALREADY IN FREQUENCY");
             closeModals();
@@ -2357,9 +2383,20 @@
         function deletePlaylist() {
             const pl = playlists.find(p => p.id === currentTab);
             if (!pl) return;
+
+            // Prevent deletion of default albums
+            if (['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(pl.id)) {
+                alert('Cannot delete default albums!');
+                return;
+            }
+
             if (confirm(`DELETE PLAYLIST "${pl.name}"?`)) {
                 playlists = playlists.filter(p => p.id !== currentTab);
-                saveData('playlists', playlists);
+                // Only save user playlists (exclude defaults)
+                const userPlaylists = playlists.filter(p =>
+                    !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
+                );
+                saveData('playlists', userPlaylists);
                 renderPlaylistTabs();
                 switchTab('all');
             }
@@ -2369,7 +2406,10 @@
             const pl = playlists.find(p => p.id === currentTab);
             if (!pl) return;
             pl.songs = pl.songs.filter(t => t !== originalTitle);
-            saveData('playlists', playlists);
+            const userPlaylists = playlists.filter(p =>
+                !['blessed_boys', 'slimeworld', 'codeine_cowboy'].includes(p.id)
+            );
+            saveData('playlists', userPlaylists);
             updatePlaylistView();
         }
         function renderPlaylistTabs() {
